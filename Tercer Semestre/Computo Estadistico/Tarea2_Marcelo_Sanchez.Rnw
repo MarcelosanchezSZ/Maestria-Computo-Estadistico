@@ -1,0 +1,495 @@
+\documentclass[paper=letter, fontsize=11pt]{scrartcl} 
+
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{verbatim}
+\usepackage{pictex}  
+\usepackage{multimedia}
+\usepackage{listings}
+\usepackage{xcolor,colortbl}
+\usepackage[spanish]{babel} % language/hyphenation
+\usepackage{amsmath,amsfonts,amsthm} % Math packages
+\usepackage{amsbsy}
+\usepackage{amssymb}
+\usepackage{fancyvrb}
+\usepackage{sectsty} % Allows customizing section commands
+\allsectionsfont{\centering \normalfont\scshape} % Make all sections centered, the default font and small caps
+
+\usepackage{fancyhdr} % Custom headers and footers
+\pagestyle{fancyplain} % Makes all pages in the document conform to the custom headers and footers
+\fancyhead{} % No page header - if you want one, create it in the same way as the footers below
+\fancyfoot[L]{} % Empty left footer
+\fancyfoot[C]{} % Empty center footer
+\fancyfoot[R]{\thepage} % Page numbering for right footer
+\renewcommand{\headrulewidth}{0pt} % Remove header underlines
+\renewcommand{\footrulewidth}{0pt} % Remove footer underlines
+\setlength{\headheight}{13.6pt} % Customize the height of the header
+
+\numberwithin{equation}{section} % Number equations within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{figure}{section} % Number figures within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{table}{section} % Number tables within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs - comment this line for an assignment with lots of text
+
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} % Create horizontal rule command with 1 argument of height
+
+\title{	
+\normalfont \normalsize 
+\textsc{Centro de Investigaci\'on en Matem\'aticas (CIMAT). Unidad Monterrey} 
+\\ [10pt] 
+\horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
+\huge C\'omputo Estad\'istico\\Tarea 2 \\ 
+\horrule{2pt} \\[0.5cm] % Thick bottom horizontal rule
+}
+
+\author{Marcelo Alberto Sanchez Zaragoza} % Your name
+
+\date{\normalsize\today} % Today's date or a custom date
+
+\begin{document}
+\lstdefinestyle{customc}{
+  belowcaptionskip=1\baselineskip,
+  basicstyle=\footnotesize, 
+  frame=lrtb,
+  breaklines=true,
+  %frame=L,
+  %xleftmargin=\parindent,
+  language=C,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{red!40!black},
+  identifierstyle=\color{blue},
+  stringstyle=\color{purple},
+}
+
+\lstset{breakatwhitespace=true,
+  basicstyle=\footnotesize, 
+  commentstyle=\color{green},
+  keywordstyle=\color{blue},
+  stringstyle=\color{purple},
+  language=C++,
+  columns=fullflexible,
+  keepspaces=true,
+  breaklines=true,
+  tabsize=3, 
+  showstringspaces=false,
+  extendedchars=true}
+
+\lstset{ %
+  language=R,    
+  basicstyle=\footnotesize, 
+  numbers=left,             
+  numberstyle=\tiny\color{gray}, 
+  stepnumber=1,              
+  numbersep=5pt,             
+  backgroundcolor=\color{white},
+  showspaces=false,             
+  showstringspaces=false,       
+  showtabs=false,               
+  frame=single,                 
+  rulecolor=\color{black},      
+  tabsize=2,                  
+  captionpos=b,               
+  breaklines=true,            
+  breakatwhitespace=false,    
+  title=\lstname,             
+  keywordstyle=\color{blue},  
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},   
+  escapeinside={\%*}{*)},      
+  morekeywords={*,...}         
+} 
+
+
+\maketitle % Print the title
+
+\section{Problema 1}
+Si se ha extra\'ido toda la informaci\'on sistem\'atica con un modelo de pron\'ostico, entonces lo que queda, el residual, debe ser ruido blanco. Con m\'as precisi\'on, las innovaciones verdaderas son ruido blanco, y si un modelo es buena aproximaci\'on de Wold, entonces sus errores de pron\'ostico a una etapa se deben aproximar al ruido blanco Los residuales del modelo
+est\'an en el an\'alogo dentro de la muestra de los errores de pron\'ostico a una etapa fuera de la muestra. En consecuencia, vemos la utilidad de varias pruebas de la hip\'otesis que los residuales son ruido blanco. La de Durbin-Watson es la prueba m\'as com\'un. Recu\'erdese que la d\'ocima de Durbin Watson, descrita en el ap\'endice del capitulo 1 es
+
+  \begin{align*}
+		DW = \frac{\sum_{t=2}^T(e_t - e_{t-1})^2}{\sum_{t=1}^Te_t^2}
+  \end{align*}
+Obs\'erve que
+\begin{align*}
+		\sum_{t=2}^T(e_t-e_{t-1})^2 \approx 2\sum_{t=2}^Te_t^2 - 2\sum_{t=2}^Te_te_{t-1}
+  \end{align*}
+y as\'i $DW = s(1-\hat{p}(1))$
+
+y entonces la prueba de Durbin-Watson se basa efectivamente solo en la correlaci\'on de la primera muestra, y en realidad solo prueba si la primera autocorrelaci\'on es cero. En consecuencia, se dice que la de Durbin-Watson es una prueba de correlaci\'on seriada de primer orden o correlaci\'on en serie de primer orden. Adem\'as, la prueba de Durbin-Watson no es valida en presencia de variables dependientes rezagadas. En ambos casos nos gustar\'ia un marco m\'as general y flexible para diagnosticar la correlaci\'on seriada. El correlograma de residuales, formado por las autocorrelaciones muestrales residuales, las autocorrelaciones parciales muestrales y los estad\'isticos $Q$ asociados desempe\~{n}an este papel.
+
+\begin{enumerate}
+    \item[a)] Cuando describimos el correlograma en la prueba, nos enfocamos al caso de una serie temporal observada, para el que demostramos que los estad\'isticos $Q$ se distribuyen como $X_m^2$. Sin embargo, ahora deseamos evaluar si las perturbaciones no observadas del modelo son ruido blanco Para hacerlo usaremos los residuales del modelo, que son estimados de las perturbaciones no observadas. Ya que un modelo se ajusta para obtener los residuales, necesitamos tomar en cuenta los grados de libertad usados La consecuencia es que la distribuci\'on del estad\'istico $Q$ con la hip\'otesis de ruido blanco se aproxima mejor como una variable aleatoria $X_{m-k}^2$ en la que $k$ es la cantidad de par\'ametros que se estiman. Es la raz\'on, por
+ejemplo, por la que no se mencionan los valores $p$ (de hecho ni los programas
+estad\'isticos los calculan) para los estad\'isticos $Q$ asociados con el correlograma de residuales de nuestro modelo de pron\'ostico de empleo, sino hasta que m>k.
+  
+    \item[b)] La prueba $h$ de Durbin es una alternativa en la prueba de Durbin-Watson. Como en el caso de la prueba Durbin-Watson, el fin es detectar correlaci\'on en serie de primer orden, pero es valida en presencia de variables dependientes demoradas. Busque informaci\'on acerca de las generalidades y de la prueba $h$ de Durbin en la bibliograf\'ia y escriba lo encontrado.
+    
+    \item[c)] La prueba de Brewsch-Godfrey es otra alternativa a la de Durbin-Watson. Permite detectar correlaci\'on seriada de orden $p$, y tambi\'en es valida en presencia de variables rezagadas. Investigue en la bibliograf\'ia acerca del procedimiento Brewsch-Godfrey y escriba lo que aprendi\'o.
+    
+    \item[d)] Â¿Cual de las pruebas es la m\'as \'util para evaluar las propiedades de residuales a partir de modelos de pron\'ostico, el correlograma de residuales, la prueba $h$ de Durbin o la prueba de Brewsch-Godfrey? Â¿porque?
+    
+  \end{enumerate}
+\textcolor{red}{\textbf{\large{Soluci\'on}}}\\
+Inciso b)\\
+
+La prueba H de Durbin sigue siendo v\'alida cuando se incluyen valores rezagados de la variable dependiente:\\
+\begin{align*}
+  y_t = \alpha_0 + \alpha_1y_t + ... + \alpha_ky_{t-k}+\alpha_{k-1}y_t + u_t
+\end{align*}
+La H de Durbin se define como:\\
+\begin{align*}
+  H = p\sqrt{\frac{n}{[( 1-nV(\alpha_1)  )]}}
+\end{align*}
+
+El estad\'istico $d$ de Durbin-Watson puede no usarse para detectar la correlaci\'on serial (de primer orden) en modelos autorregresivos, porque el valor $d$ calculado en tales modelos generalmente tiende hacia 2, que es el valor de $d$ esperado en un verdadero secuencia aleatoria, es decir, al calcular el estad\'istico $d$ para tales modelos, existe un sesgo incorporado contra el descubrimiento de la correlaci\'on serial (de primer orden).\\
+Algunas generalidades:
+
+\begin{itemize}
+\item El principal inconveniente que tiene este contraste es que si el radicando es negativo, el test falla.
+\item Dado que la prueba es una prueba para muestras grandes, su aplicaci\'on en muestras peque\~{n}as no est\'a estrictamente justificada.
+\item No importa cu\'antas variables X o cu\'antos valores rezagados de Y se incluyan en el modelo de regresi\'on. Para calcular $h$, necesitamos considerar solo la varianza del coeficiente $Y_{t-1}$
+\item La prueba no es aplicable si $ n var(\hat{\alpha_2}$ excede $1$.En la pr\'actica, sin embargo, esto no suele suceder.\\
+\end{itemize}
+
+Inciso c)\\
+
+El contraste de Breuch-Godfrey se especifica con la finalidad de analizar si existe o no autocorrelaci\'on de orden superior a uno. Es un test de autocorrelaci\'on en los errores y residuos estad\'isticos en un modelo de regresi\'on. Hace uso de los errores generados en el modelo de regresi\'on y un test de hip\'otesis derivado de \'este. La hip\'otesis nula es que no exista correlaci\'on serial de cualquier orden sobre p.\\
+El test es m\'as general que el del estad\'istico de Durbin-Watson(o estad\'istico h de Durbin), el cual es solo v\'alido para regresores no-estoc\'asticos y para testear la posibilidad de un modelo autorregresivo de primer orden para los errores de regresi\'on. El test BG no tiene restricciones, y es estad\'isticamente m\'as poderoso que el estad\'istico de h de Durbin.\\
+\begin{itemize}
+  \item Los regresores incluidos en el modelo de regresi\'on pueden contener valores rezagados de la regresi\'on $Y$, puede encontrarse variables explicativas. Comparada con la restricci\'on de Durbin-Watson en la que no puede haber valores rezagados de la regresi\'on entre los regresores.
+  \item Una desvetaja de la prueba Breuch-Godfrey es que el valor de p, la longitud de desfase, no se puede especificar a priori.\\ 
+\end{itemize}
+
+Inciso d)\\
+
+La prueba m\'as \'util para evaluar las propiedades de residuales a partir de modelos de pron\'ostico es la prueba de Breusch-Godfrey ya que es estad\'isticamente m\'as poderoso ya que analiza todas las autocorrelaciones hasta el retraso h y la prueba de Durbin-Watson solo analiza la autocorrelaci\'on en el retraso 1.
+
+
+\section{Problema 2}
+
+Demuestre paso a paso que:
+  \begin{align*}
+  \gamma(\tau) = E(\gamma_t\gamma_{t-\tau}) = E((\varepsilon_t + \theta\varepsilon_{t-1})(\varepsilon_{t-\tau} + \theta\varepsilon_{t-\tau-1}))
+  \end{align*}
+donde $\theta\sigma^2, \tau = 1$ y 0 en otro caso.\\
+Completando los pasos que faltan evaluando en forma explicita la expectativa $E((\varepsilon_t + \theta\varepsilon_{t-1})(\varepsilon_{t-\tau} + \theta\varepsilon_{t-\tau-1}))$.
+
+\textcolor{red}{\textbf{\large{Soluci\'on}}}\\
+
+Comenzamos con la siguientes expresiones:
+
+\begin{align*}
+  y_t = \varepsilon_t + \theta\varepsilon_{t-1}\\
+  y_{t-\tau} = \varepsilon_t + \theta\varepsilon_{t-\tau-1}\\
+\end{align*}
+las anteriores expresiones fueron proporcionadas en clase.\\
+\begin{align*}
+  E(\gamma_t\gamma_{t-\tau}) = E( \varepsilon_t\varepsilon_{t-\tau} + \theta\varepsilon_t\varepsilon_{t-\tau-1}  + \theta\varepsilon_t\varepsilon_{t-\tau-1} + \theta^2\varepsilon_{t-1}\varepsilon_{t-\tau-1})
+  \end{align*}
+Ya que hemos desarrollado partimos de $\tau = 1$, as\'i:
+
+\begin{align*}
+  E( \varepsilon_t\varepsilon_{t-\tau} + \theta\varepsilon_t\varepsilon_{t-\tau-1}  + \theta\varepsilon_t\varepsilon_{t-\tau-1} + \theta\varepsilon_{t-1}\varepsilon_{t-\tau} + \theta^2\varepsilon_{t-1}\varepsilon_{t-\tau-1}) = \\
+  E(\varepsilon_t\varepsilon_{t-1}) + E(\theta\varepsilon_t\varepsilon_{t-2}) + E(\theta\varepsilon_t\varepsilon_{t-2}) + \theta\varepsilon_{t-1}\varepsilon_{t-1} + E(\theta^2\varepsilon_{t-1}\varepsilon_{t-2})
+  \end{align*}
+Los valores esperados con epsilon de diferentes tiempo se vuelven igual a cero y los que coinciden tienen una varianza de error $\sigma^2$. As\'i:
+
+\begin{align*}
+  0 + 0 + 0 + \theta\sigma^2 + 0 = \theta\sigma^2
+\end{align*}
+De esta forma hemos observado que pasa cuando $\tau = 1$, nos resta ver que sucede con $\tau > 1$.\\
+Pero al tener $\tau > 1 $ se puede ver que nig\'un $\varepsilon$ coincidir\'a por lo que la tendremos que todo es igual a cero.\\
+El \'ultimo caso es cuando $\tau = 0$ vamos a tener que la varianza y el resultado es $\sigma^2 + \theta\sigma^2$.\\
+
+
+\section{Problema 3}
+Modelos de agregaci\'on y de desagregaci\'on pron\'ostico de arriba abajo y de abajo arriba. El asunto de la agregaci\'on se relaciona con el de los m\'etodos y la complejidad. Con frecuencia se desea pronosticar un agregado, como por ejemplo las ventas totales de una empresa manufacturera, pero podemos emplear un m\'etodo agregado o desagregado. Supongamos que las ventas totales est\'an formadas por las de 35 productos cuya informaci\'on se encuentra en Tarea02\_Datos.txt. El m\'etodo agregado, o de arriba abajo o macro es simplemente modelar y pronosticas las ventas totales. El m\'etodo desagregado, o de abajo arriba, o micro, es modelar y pronosticar por separado las ventas de los productos individuales, para despu\'es sumarlas. Quiz\'a sea sorprendente, pero es imposible saber cual de los m\'etodos es mejor, el agregado o desagregado. Todo depende de las circunstancias del caso la \'unica forma de saberlo es probar ambos m\'etodos y comparar los resultados del pron\'ostico. Argumente ventajas y desventajas de utilizar un m\'etodo agregado o desagregado en funci\'on de la informaci\'on proporcionada en el archivo Tarea02\_Datos.txt.
+
+\textcolor{red}{\textbf{\large{Soluci\'on}}}\\
+<<eval=TRUE,echo=TRUE,comment=NA,warning=FALSE,message=FALSE,fig.width=5.0,fig.height=5.0>>=
+library('readr')
+library(forecast)
+
+Jordan <- function(data, articulo, m1){
+  if(articulo == 'Todos'){
+    data_1 <- data.frame(data)
+    data_orde <- data[order(data$Semana),]
+    dat1 <- data_orde
+    nd  <- nrow(dat1)
+    agr <- aggregate(dat1[,3:6],list(substring(dat1[,1],1,8)),sum)
+    na  <- nrow(agr)
+    dat <- agr
+    Fec <- dat[,"Group.1"]
+    if(m1 == 1){
+      dat <- dat[1:122,] 
+    }
+    num_art <- 35
+  }
+  else{
+    datos_ordenados <- data[order(data$Semana),] ## ordenamos datos
+    data_articulo <- datos_ordenados[datos_ordenados$Articulo == articulo,]
+    dat <- data_articulo
+    #dat <- data_articulo[1:122,] #####
+    nd  <- nrow(dat)
+    agr <- dat
+    na  <- nrow(dat)
+    num_art <- 1
+    Fec <- dat[,"Semana"]
+  }
+  ####### paso 1 #########
+  Y <- dat[,"Venta_Pesos"]
+  nY <- length(Y)
+  
+  ## Inter 
+  X <- rep(1,nY)
+  
+  RR  <- lm(Y~-1+X)
+  RES <- RR$res
+  
+  X <- cbind(Inter=rep(1,nY),Tend=1:nY)
+  
+  RR  <- lm(Y~-1+X)
+  RES <- RR$res
+  
+  ####### paso 2 #########
+  
+  Mes <- as.numeric(substring(Fec,5,6))
+  XMes <- matrix(0,nY,12)
+  for(i in 1:nY){
+    XMes[i,Mes[i]] <- 1
+  }
+  
+  XMes <- XMes[,-1]
+  
+  X <- cbind(Inter=rep(1,nY),Tend=1:nY,XMes)
+  
+  RR  <- lm(Y~-1+X)
+  RES <- RR$res
+  
+  ####### paso 3 ########
+  colnames(XMes) <- paste("Mes_",2:12,sep="")
+  
+  X <- cbind(Inter=rep(1,nY),Tend=1:nY,XMes,
+             Trafico=dat[,"Cant_Tickets"]/num_art)#### ojo 
+  #X[1:4,]
+  
+  RR  <- lm(Y~-1+X)
+  RES <- RR$res
+  
+  ####### paso 4 ########
+  YMT <- Y/(dat[,"Num_Tiendas"]/num_art)
+  
+  X <- cbind(Inter=rep(1,nY),Tend=1:nY,XMes,
+             Trafico=dat[,"Cant_Tickets"]/num_art)
+  RR  <- lm(YMT~-1+X)
+  RES <- RR$res
+  
+  ####### paso 5 ########
+  SS <- scale(RES)
+  OutPos <- ifelse(SS > 2,1,0)
+  OutNeg <- ifelse(SS < -2,1,0)
+  X <- cbind(Inter=rep(1,nY),Tend=1:nY,XMes,
+             Trafico=dat[,"Cant_Tickets"]/num_art,
+             OutPos,OutNeg)
+  RR  <- lm(YMT~-1+X)
+  RES <- RR$res
+  
+  ####### paso 6 ########
+  Precio <- dat[,"Venta_Pesos"]/dat[,"Unidades"]
+  
+  X <- cbind(Inter=rep(1,nY),Precio,
+             Tend=1:nY,XMes,
+             Trafico=dat[,"Cant_Tickets"]/num_art,
+             OutPos,OutNeg)
+  RR  <- lm(YMT~-1+X)
+  RES <- RR$res
+  
+  ####### paso 7 ########
+  LYMT <- log(YMT)
+  
+  X <- cbind(Inter=rep(1,nY),Precio=log(Precio),Tend=log(1:nY),
+             XMes,Trafico=log(dat[,"Cant_Tickets"]/num_art),
+             OutPos,OutNeg)
+  RR  <- lm(LYMT~-1+X)
+  RES <- RR$res
+  #plot.ts(RES,ylab="Residuales",
+  #        main="Modelo: Log (Inter + Tend + Traf + Out + Precio)",
+  #        xlab="",xaxt="n")
+  #axis(1,1:na,agr[,1],las=2,cex.axis=0.5)
+  lista = c(LYMT, X)
+  
+  return( list(X = X,LYMT = LYMT) )
+}
+
+data_prueba1 <- read.delim("C:/Users/Marcelo Sanchez/Downloads/Tarea02_Datos.txt",sep ='|')
+a <- 'Todos'
+l <- c('Art_01', 'Art_02', 'Art_03', 'Art_04', 'Art_05', 'Art_06',
+       'Art_07', 'Art_06', 'Art_07', 'Art_08', 'Art_09', 'Art_10',
+       'Art_11', 'Art_12', 'Art_13', 'Art_14', 'Art_15', 'Art_16',
+       'Art_17', 'Art_18', 'Art_19', 'Art_20', 'Art_21', 'Art_21',
+       'Art_22', 'Art_22', 'Art_23', 'Art_24', 'Art_25', 'Art_26',
+       'Art_27', 'Art_28', 'Art_29', 'Art_30', 'Art_31', 'Art_32',
+       'Art_33', 'Art_34', 'Art_35')
+
+#######################################################################
+################### tomando cada uno de los articulos #################
+#######################################################################
+
+matriz_datos <- matrix(, nrow = 11, ncol = 35)
+n <- 122
+for (i in 1:35) {
+  cat(" ")
+  cat(" ") 
+  cat("Articulo",i)
+  prueba1 <- Jordan(data_prueba1, l[i])
+  LYMT <- data.frame( prueba1[2] )
+  X <- data.frame( prueba1[1] )
+  model = auto.arima(LYMT[1:n,], max.p = 12, 
+                     max.q = 12, d = 0, stepwise = FALSE, 
+                     xreg = cbind(X$X.Precio[1:n],
+                      X$X.Tend[1:n],X$X.Mes_2[1:n], 
+                      X$X.Mes_3[1:n],X$X.Mes_4[1:n],
+                      X$X.Mes_5[1:n],X$X.Mes_6[1:n],
+                      X$X.Mes_7[1:n],X$X.Mes_8[1:n], 
+                      X$X.Mes_9[1:n],X$X.Mes_10[1:n],
+                      X$X.Mes_11[1:n],X$X.Mes_12[1:n],
+                      X$X.Trafico[1:n]) )
+  
+  
+  prediccion <- forecast(model, xreg = cbind(X$X.Precio[n:132],
+                          X$X.Tend[n:132], X$X.Mes_2[n:132], 
+                          X$X.Mes_3[n:132],X$X.Mes_4[n:132],
+                          X$X.Mes_5[n:132], X$X.Mes_6[n:132],
+                          X$X.Mes_7[n:132], X$X.Mes_8[n:132],
+                          X$X.Mes_9[n:132],X$X.Mes_10[n:132],
+                          X$X.Mes_11[n:132], X$X.Mes_12[n:132],
+                          X$X.Trafico[n:132]) ,h=10)
+  
+  #### agregamos un grafico para observar la predicción
+  m4 <- prediccion
+  # verificando el ajuste del método
+  plot(m4, main="Grafica de un articulo",
+       xlab=l[i] )
+  autoplot(m4) + autolayer(fitted(m4), series="Ajuste")
+  ###############
+  s_1 <- data.frame(prediccion)
+  l22 <- c(s_1$Point.Forecast)
+  matriz_datos[,i] <- l22
+}
+### Realizamos unos ajustes a los valores para encontrar
+##   los valores verdaderos.
+matriz_exp <- exp(matriz_datos)
+suma_t <- rowSums(matriz_exp)
+log(suma_t)
+
+
+#######################################################################
+######################## con todos los datos ##########################
+#######################################################################
+
+prueba1 <- Jordan(data_prueba1, a, 0)
+LYMT <- data.frame( prueba1[2] )
+X <- data.frame( prueba1[1] )
+n <- 122
+################# realizamos el pronostico #########################
+model = auto.arima(LYMT[1:n,], max.p = 12, 
+                   max.q = 12, d = 0, stepwise = FALSE, 
+                   xreg = cbind(X$X.Precio[1:n],
+                              X$X.Tend[1:n], X$X.Mes_2[1:n], 
+                              X$X.Mes_3[1:n],X$X.Mes_4[1:n],
+                              X$X.Mes_5[1:n], X$X.Mes_6[1:n],
+                              X$X.Mes_7[1:n], X$X.Mes_8[1:n],
+                              X$X.Mes_9[1:n],X$X.Mes_10[1:n],
+                              X$X.Mes_11[1:n], X$X.Mes_12[1:n],
+                              X$X.Trafico[1:n]) )
+
+prediccion <- forecast(model, xreg = cbind(X$X.Precio[n:132],
+                          X$X.Tend[n:132], X$X.Mes_2[n:132], 
+                          X$X.Mes_3[n:132],X$X.Mes_4[n:132],
+                          X$X.Mes_5[n:132], X$X.Mes_6[n:132],
+                          X$X.Mes_7[n:132], X$X.Mes_8[n:132],
+                          X$X.Mes_9[n:132],X$X.Mes_10[n:132],
+                          X$X.Mes_11[n:132], X$X.Mes_12[n:132],
+                          X$X.Trafico[n:132]) ,h=10)
+##### 
+m4 <- prediccion
+autoplot(m4)
+
+# verificando el ajuste del método
+autoplot(m4)+autolayer(fitted(m4), series="Ajuste")
+
+# verificando los residuales
+checkresiduals(m4)
+s_1 <- data.frame(prediccion)
+l22 <- c(s_1$Point.Forecast)
+
+#*********************************************************************#
+#######################################################################
+########################### RESULTADOS ################################
+#######################################################################
+#*********************************************************************#
+
+
+###### sin exponencial 
+l22 #agregado 
+LYMT[122:132,] 
+log(suma_t) #desagregado
+
+
+###### ocupando exponencial
+exp(l22)
+exp(LYMT[122:132,])
+exp(log(suma_t))
+
+#*********************************************************************#
+#######################################################################
+######################### MEJOR MODELO ################################
+#######################################################################
+#*********************************************************************#
+
+ERROR_1 <- sum( (LYMT[122:132,] - l22)^2 )/10
+ERROR_1 ## agregado
+
+
+ERROR_2 <- sum( (LYMT[122:132,] - log(suma_t))^2 )/10
+ERROR_2 ##desagregado
+
+@
+El procedimiento que se realizo fue el siguiente:\\
+
+1.- Observar cuantos articulos contiene nuestra base de datos y ordenar por semanas los datos. Una vez realizada dicha tarea se realizo una suma por semana, observe que dicha suma solo realizo en el m\'etodo agregado ya que como tenemos 35 articulos nos resultaron 35 datos con la misma semana, por lo que se opto por sumat todas estas semanas. Al final para ambos m\'etodos obtuvimos un total de 132 semanas.\\
+
+
+2.- Encontrar un modelo ARIMA adecuado para cada uno de los 35 articulos que contiene la base de datos y tambi\'en encontrar un modelo tomando los 35 articulos, es decir, un modelo para el m\'etodo agregado.\\
+
+3.- Una vez encontrado dicho resultado realizamos una predicci\'on de las \'ultimas 10 semanas para ambos m\'etodos. Al realizar dicha predicci\'on seguimos las indicaciones que nos proporciona el problema, realizar la suma de los resultados que encontramos en el m\'etodo desagregado. Cabe recalcar que para realizar dicha suma en el m\'etodo desagregado hubo que aplicar logaritmo a cada uno de los 10 pronosticos y luego sumarlo para finalmente aplicarles el logaritmo, si no se hubiera hecho de esa forma nuestro resultado estaria mal ya que al sumarlas directamente estariamos realizando un producto y esa no es la intenci\'on. Adicional a lo anteriormente comentado se realizaron algunas gr\'aficas ilustrativas por medio de unos comandos para ambos m\'etodos, las gr\'aficas correspondientes al m\'etodo desagregado tienen la etiqueta al articulo que corresponde y la gr\'afica correspondiente al agregado solo muestra los resultados de los pronosticos y no lleva etiqueta como en las anteriores.\\
+
+4.- Finalmente buscamos el error en la predicci\'on para cada uno de los m\'etodos, en este caso el que mejor nos arrojo fue el m\'etodo desagregado, los resultados de error fuero: $agregado = 0.0239602$ y $desagregado = 0.0186323$. Para encontrar dichos errores los valores que tomamos como base fueron los verdaderos valores de las 10 semanas tomando los 35 articulos.\\
+
+Comentarios: \\
+Observamos que el mejor m\'etodo fue el desagregado ya que nos arrojo un error menor comparado con el m\'etodo agregado. Podemos afirmar que al menos para este caso el m\'etodo que mejor funciona es el desagregado pero como desventaja es el tiempo de c\'omputo ya que al ser 35 articulos hab\'ia que dividir los datos en los 35 grupos, encontrar el mejor modelo para cada uno, predecir para cada uno de ellos y  finalmente realizar la gr\'afica(opcional), mientras que el agregado solo se corrio una vez y el resultado fue m\'as veloz.
+
+
+\section{Problema 4}
+A continuaci\'on presentaremos los modelos ARCH y GARCH, muy \'utiles para modelar y pronosticar fluctuaciones por volatilidad. Para conocer una descripci\'on detallada, v\'ease Diebold y Lopez 1995 y lo que sigue se basa en ese trabajo.
+
+  \begin{enumerate}
+    \item[a)] El proceso ARCH propuesto por Engle(1982) se define as\'i:
+    \begin{align*}
+      \varepsilon_{t}|\mu_{t-1}  N(0, h_t)~~~~~~~~~~~~~~~~~~~~~~~~~\\
+      h_t = w + \gamma(L)\varepsilon_{t}^2~~~~~~~~~~~~~~~~~~~~~~~~~\\
+      w > 0,~~\gamma(L) = \sum_{i=1}^p\gamma_iL^i~~~\gamma\neq 0,~para~toda~i, \gamma(1) < 1.
+    \end{align*}
+  \end{enumerate}
+
+El proceso se parametriza en funci\'on de la densidad condicional de $\varepsilon_t|\mu_{t-1}$,que se supone tiene distribuci\'on normal con promedio condicional igual a cero y varianza condicional que depende en forma lineal de innovaciones pasadas, elevadas al cuadrado. As\'i, aunque las $\varepsilon$,son seriadamente no correlacionadas, no son independientes (a menos que $\gamma(L)$ sea cero, en cuyo caso $\varepsilon_t$ es simplemente iid al ruido con varianza $w$. En especial. La varianza condicional, que es una medida com\'un de la volatilidad, fluct\'ua y es pronosticable Â¿C\'omo esperar\'ia usted que se vea la correlograma de $\varepsilon_t^2$? Â¿Por qu\'e?
+
+\textcolor{red}{\textbf{\large{Soluci\'on}}}\\
+
+Se observa que es totalmente razonable hacer uso de las funciones de autocorrelaci\'on simple y parcial de los residuos $\hat{\varepsilon}_t^2$ para obtener el orden del proceso ARCH, dado que $\hat{\varepsilon}_t^2$ es un estimador insesgado de $h_t$ e igual es buena opci\'on usar la funci\'on de autocorrelaci\'on simple de los residuos al cuadrado $\hat{\varepsilon}_t^2$ para poder decir si hay heterocedasticidad e identificar el orden del proceso ARCH.\\
+Donde los correlogramas obtenidos ser\'ian muy parecidos a los obtenidos al identificar un proceso ARIMA.\\
+Para obtener el orden del modelo GARCH(r,m) se recomienda intentar con modelos de menor orden y posteriormente elegir el modelo m\'as adecuado tomando como criterios algunos indicadores como el AIC y bayesiano BIC. El modelo GARCH contempla un par\'arametro extra, directamente relacionado con la media condicional del proceso generando un efecto suavizado. Adem\'as el modelo GARCH es m\'as parcimonioso y el modelo ARCH s\'olo considera la varianza condicional y el GARCH suma la media de manera que reduce los cambios bruscos en los intervalos de tiempo.\\
+
+\end{document}

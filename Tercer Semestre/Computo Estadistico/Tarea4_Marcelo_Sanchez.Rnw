@@ -1,0 +1,357 @@
+\documentclass[paper=letter, fontsize=11pt]{scrartcl} 
+
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{verbatim}
+\usepackage{pictex}  
+\usepackage{multimedia}
+\usepackage{listings}
+\usepackage{xcolor,colortbl}
+\usepackage[spanish]{babel} % language/hyphenation
+\usepackage{amsmath,amsfonts,amsthm} % Math packages
+\usepackage{amsbsy}
+\usepackage{amssymb}
+\usepackage{fancyvrb}
+\usepackage{sectsty} % Allows customizing section commands
+\allsectionsfont{\centering \normalfont\scshape} % Make all sections centered, the default font and small caps
+
+\usepackage{fancyhdr} % Custom headers and footers
+\pagestyle{fancyplain} % Makes all pages in the document conform to the custom headers and footers
+\fancyhead{} % No page header - if you want one, create it in the same way as the footers below
+\fancyfoot[L]{} % Empty left footer
+\fancyfoot[C]{} % Empty center footer
+\fancyfoot[R]{\thepage} % Page numbering for right footer
+\renewcommand{\headrulewidth}{0pt} % Remove header underlines
+\renewcommand{\footrulewidth}{0pt} % Remove footer underlines
+\setlength{\headheight}{13.6pt} % Customize the height of the header
+
+\numberwithin{equation}{section} % Number equations within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{figure}{section} % Number figures within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{table}{section} % Number tables within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs - comment this line for an assignment with lots of text
+
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} % Create horizontal rule command with 1 argument of height
+
+\title{	
+\normalfont \normalsize 
+\textsc{Centro de Investigaci\'on en Matem\'aticas (CIMAT). Unidad Monterrey} 
+\\ [10pt] 
+\horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
+\huge C\'omputo Estad\'istico\\Tarea 4 \\ 
+\horrule{2pt} \\[0.5cm] % Thick bottom horizontal rule
+}
+
+\author{Marcelo Alberto Sanchez Zaragoza} % Your name
+
+\date{\normalsize\today} % Today's date or a custom date
+
+\begin{document}
+\lstdefinestyle{customc}{
+  belowcaptionskip=1\baselineskip,
+  basicstyle=\footnotesize, 
+  frame=lrtb,
+  breaklines=true,
+  %frame=L,
+  %xleftmargin=\parindent,
+  language=C,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{red!40!black},
+  identifierstyle=\color{blue},
+  stringstyle=\color{purple},
+}
+
+\lstset{breakatwhitespace=true,
+  basicstyle=\footnotesize, 
+  commentstyle=\color{green},
+  keywordstyle=\color{blue},
+  stringstyle=\color{purple},
+  language=C++,
+  columns=fullflexible,
+  keepspaces=true,
+  breaklines=true,
+  tabsize=3, 
+  showstringspaces=false,
+  extendedchars=true}
+
+\lstset{ %
+  language=R,    
+  basicstyle=\footnotesize, 
+  numbers=left,             
+  numberstyle=\tiny\color{gray}, 
+  stepnumber=1,              
+  numbersep=5pt,             
+  backgroundcolor=\color{white},
+  showspaces=false,             
+  showstringspaces=false,       
+  showtabs=false,               
+  frame=single,                 
+  rulecolor=\color{black},      
+  tabsize=2,                  
+  captionpos=b,               
+  breaklines=true,            
+  breakatwhitespace=false,    
+  title=\lstname,             
+  keywordstyle=\color{blue},  
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},   
+  escapeinside={\%*}{*)},      
+  morekeywords={*,...}         
+} 
+
+
+\maketitle % Print the title
+
+\section{Problema 1}
+
+Se ha visto que a medida que aumenta el n\'umero de caracter\'isticas de un modelo, el error de entrenamiento disminuir\'a necesariamente, pero el error de prueba no. Explorar esto con datos simulados.
+  \begin{enumerate}
+    \item[a)] Genera un conjunto de datos con $p = 20$ caracter\'isticas, $n=1000$ observaciones y un vector de respuesta cuantitativo generado de acuerdo con el modelo
+    \begin{align*}
+        Y = X\beta + \varepsilon
+    \end{align*}
+    \item[b)] Divide tu conjunto de datos en un conjunto de entrenamiento que contenga 100 observaciones y un conjunto de prueba que contenga 900 observaciones
+    \item[c)] Realiza la $seleccion~del~mejor~subconjunto$ sobre el conjunto de entrenamiento y grafica el error de entrenamiento $MSE$ asociado con el mejor modelo en cada tama\~{n}o.
+    \item[d)] Grafica el error de prueba $MSE$ asociado con el mejor modelo de cada tama\~{n}o.
+    \item[e)] ¿ Para qu\'e tama\~{n}o de modelo el error del prueba $MSE$ toma su valor m\'inimo? 
+    \item[f)] ¿C\'omo se compara el modelo con el que se minimiza el error de prueba con el modelo verdadero utilizado para generar los datos?
+  \end{enumerate}
+
+\textcolor{red}{\textbf{\large{Soluci\'on}}}\\
+
+Inciso a)\\
+Generamos nuestros datos que nos solicita el inciso, en este caso pedimos los 1000 datos de una distribuci\'on normal. Damos los valores de beta que queremos sean distintos de cero, en este caso seleccionamos los siguientes: 3,5,6,7 y 12.
+<<eval=TRUE,echo=TRUE,comment=NA,warning=FALSE,message=FALSE,fig.width=5.0,fig.height=5.0>>=
+
+set.seed(123457)
+X <- matrix(rnorm(20000),ncol = 20)
+betas <- rep(0, 20)
+betas[c(3, 5, 7, 12, 6)] = 1:5
+#betas[c(2)] = 5
+betas
+y = X %*% betas + rnorm(1000)
+#y
+
+@
+
+Inciso b)\\
+Dividimos nuestros datos en un conjunto de entrenamiento con 100 datos y otro conjunto de prueba con 900 datos.
+<<eval=TRUE,echo=TRUE,comment=NA,warning=FALSE,message=FALSE,fig.width=5.0,fig.height=5.0>>=
+
+set.seed(1) #fijamos la semilla para reproducir los resultados
+train <- sample (1:1000, 100)# se selecciona aleatoriamente la
+train
+#mitad de obs para el
+#conjunto de entrenamiento
+
+test <- (-train) 
+#test
+
+
+X_train <- X[train ,]
+X_test <- X[test, ]
+#X_test
+
+y_train <- y[train]
+y_test <- y[test]
+#View(X_test)
+@
+
+
+Inciso c)\\
+Finalmente en la siguientes lineas buscamos el mejor conjunto de variables para cada tama\~{n}o de variables, es decir, de todas las posibles combinaciones de nCp tomamos la que mejor nos de el valor de MSE.\\
+Una vez que encontramos estos mejores conjuntos lo que hacemos es realizar el pronostico para encontrar el MSE de entrenamiento y prueba, estos los guardamos y finalmente los gr\'aficamos.
+<<eval=TRUE,echo=TRUE,comment=NA,warning=FALSE,message=FALSE,fig.width=5.0,fig.height=5.0>>=
+
+## Realizamos la primer regresion tomando todas las variables
+## predictoras
+datos <- as.data.frame(cbind(X_train,y_train))
+dimnames(datos)[[2]][21] = "y"
+# Modelo con todas las variables
+completo <- lm(y ~ ., datos)
+summary(completo)
+
+datos_p <- as.data.frame(cbind(X_test))
+datos_p
+
+########### alternativa buena ########################
+
+library(leaps)
+# Modelo
+mods <- leaps(x = X_train, y = y_train, method = "Cp", nbest = 1)
+plot(mods$size, mods$Cp, main = "Cp versus talla modelos",
+xlab = expression(p), ylab = expression(C[p]),
+col = 'blue')
+
+###################################################################
+###################################################################
+
+## por medio del comando seleccionamos los mejores modelos 
+## para cada valor de p=1,2,...,20
+model_subset <- regsubsets(x = datos[1:20], y = y_train, nvmax = 20)
+variables <- summary(model_subset)$which[,-1] 
+MSE.error <- rep (0, 20 )
+MSE.error_test <- rep (0, 20 )
+for (i in 1:20) {
+  variable_finales <- which(variables[i,])
+  #print( variable_finales)  
+  c2 <- lm(y_train ~., datos[variable_finales] )
+  
+  ### train
+  c2_p <- predict( c2, datos[ variable_finales ] )
+  MSE.error[i] <- mean( (c2_p - y_train)**2 )
+  
+  ### test
+  c2_p <- predict( c2, datos_p[ variable_finales ] )
+  MSE.error_test[i] <- mean( (c2_p - y_test)**2 )
+  
+}
+e0 <- mean((lm(y_train~1)$residuals)^2)
+MSE.error <- c(e0, MSE.error)
+MSE.error
+plot(MSE.error)
+@
+Adicionalmente a lo que solicita el ejercicio se agrego el gr\'afico tomando encuenta el $C_p$, solo con fines ilustrativos y tambien para observar si coinciden con nuestros resultados.\\
+
+
+Inciso d)\\
+Se muestra la gr\'afica de los MSE de prueba, se puede observar que se agrega el caso cuando no tomamos ninguna variable y solo el intercepto.
+<<eval=TRUE,echo=TRUE,comment=NA,warning=FALSE,message=FALSE,fig.width=5.0,fig.height=5.0>>=
+e02 <- mean((y_test-1*lm(y_train~1)$coef)^2)
+MSE.error_test <- c(e02, MSE.error_test)
+MSE.error_test
+plot(MSE.error_test)
+@
+
+Inciso e)\\
+
+El tama\~{n}o de modelo que es el m\'inimo para el error de prueba $MSE$ es 5. Se observa que su valor de error de $MSE$ es de 1.009632.\\
+
+Inciso f)\\
+<<eval=TRUE,echo=TRUE,comment=NA,warning=FALSE,message=FALSE,fig.width=5.0,fig.height=5.0>>=
+
+mejor_1 <- summary(model_subset)$which[,-1]
+mejor_2 <- which( mejor_1[5,] )
+mejor_2
+
+best <- lm(y_train ~., datos[mejor_2] )
+
+best$coefficients
+betas
+@
+Al observar los valores encontramos que son muy similares los valores de los betas y coinciden con las entradas que se pusieron al principio.\\
+
+\section{Problema 2}
+
+Generaci\'on de datos simulados y aplicaci\'on de los m\'etodos de selecci\'on de subconjuntos 
+\begin{enumerate}
+  \item[a)] Usa una funci\'on de $R$ para generar una variable predictora $X$ de longitus $n=100$, as\'i como un vector de ruido $\varepsilon$ de tama\~{n}os $n=100$
+  \item[b)] Genera un vector de respuesta $Y$ de longitud $n=100$ de acuerdo al modelo
+  \begin{align*}
+        Y = \beta_0 + \beta_1X + \beta_2X^2 + \beta_3X^3 + \varepsilon
+    \end{align*}
+    donde $\beta_0, \beta_1, \beta_2, \beta_3$ son constantes de tu elecci\'on
+    \item[c)] Utiliza la funcion $regsubserts()$ para realizar la seleccion de los mejores subconjuntos con el fin de elegir el mejor modelo que contenga los predictores $X, X^2, X^3,...,X^{10}$, ¿ Cu\'al es el mejor modelo obtenido seg\'un el $C_p, BIC$ y el $R^2$ ajustado?
+  \item[d)] Repite (c) usando la selecci\'on forward stepwise y backward stepwise ¿ C\'omo se compara tu respuesta con los resultados obtenidos en (c)
+\end{enumerate}
+
+\textcolor{red}{\textbf{\large{Soluci\'on}}}\\
+
+Inciso a)\\
+Generamos nuestros datos como lo menciona el inciso, en este caso pedimos datos de una distribuci\'on normal e igual para el vector de ruido.
+<<eval=TRUE,echo=TRUE,comment=NA,warning=FALSE,message=FALSE,fig.width=5.0,fig.height=5.0>>=
+
+set.seed(1234)
+X <- matrix(rnorm(100),ncol = 1)
+#X
+e <- matrix(rnorm(100), ncol = 1)
+#e
+@
+
+
+Inciso b)\\
+Generamos los valores para la variable $Y$.
+<<eval=TRUE,echo=TRUE,comment=NA,warning=FALSE,message=FALSE,fig.width=5.0,fig.height=5.0>>=
+
+## Definimos el valor de las constantes
+b_0 <- 2
+b_1 <- 1.4
+b_2 <- 10
+b_3 <- 0.9
+
+## Generamos el vector 
+Y <- b_0 + b_1*X + b_2*(X)**2 + b_3*(X)**3 + e
+#Y
+
+@
+
+
+Inciso c)\\
+Al realizar la funci\'on $regsubsets$ y graficando observamos que el n\'umero de variables que mejor nos ayuda es tomando un conjunto de taman\~{n}o 3 y est\'as se mandan a imprimir en pantalla($\beta_0$=2.1324, $\beta_1$=1.3125, $\beta_2$=9.8936 y $\beta_3$=0.9323).\\
+Adicional a lo anterior se  muestran los graficos tomando en cuenta el $C_p, BIC$ y el $R^2$ ajustado, en dichos graficos nos menciona que debemos tomar tambien 3 elementos.
+<<eval=TRUE,echo=TRUE,comment=NA,warning=FALSE,message=FALSE,fig.width=5.0,fig.height=5.0>>=
+
+X_p <- cbind(X, X**2, X**3, X**4, X**5, X**6, X**7,
+             X**8, X**9, X**10)
+#X_p
+model_2 <- regsubsets(x = X_p, y = Y, nvmax = 10)
+p <- summary(model_2)$which[,-1]
+summary(model_2)$which
+
+### Dado que el intercepto sale en todos los conjuntos se omitio,
+##   se imitio por cuestiones de espacio al momento de imprimir en
+##   pantalla los resultados.
+
+for (i in 1:10) {
+  kobe <- which(p[i,])
+  print(kobe)
+}
+
+coef(model_2,3)
+
+model_cp <- summary(model_2)$cp
+plot(model_cp)
+
+model_bic <- summary(model_2)$bic
+plot(model_bic)
+
+model_adj2 <- summary(model_2)$adjr2
+plot(model_adj2)
+
+@
+
+Inciso d)\\
+Al utilizar el m\'etodo de $forward$ observamos que coinciden los valores de los coeficientes con los que encontramos en el inciso c) pero con el m\'etodo de $backward$ cambiando estos valores. 
+<<eval=TRUE,echo=TRUE,comment=NA,warning=FALSE,message=FALSE,fig.width=5.0,fig.height=5.0>>=
+
+##### metodo de forward
+model_for <- regsubsets(x=X_p, y= Y, method = 'forward')
+coef(model_for,3)
+
+model_cp <- summary(model_for)$cp
+plot(model_cp)
+
+model_bic <- summary(model_for)$bic
+plot(model_bic)
+
+model_adj2 <- summary(model_for)$adjr2
+plot(model_adj2)
+
+
+###### metodo de backward
+model_bac <- regsubsets(x=X_p, y= Y, method = 'backward')
+coef(model_bac,3)
+
+model_cp <- summary(model_bac)$cp
+plot(model_cp)
+
+model_bic <- summary(model_bac)$bic
+plot(model_bic)
+
+model_adj2 <- summary(model_bac)$adjr2
+plot(model_adj2)
+@
+
+\end{document}

@@ -1,0 +1,295 @@
+\documentclass[paper=letter, fontsize=11pt]{scrartcl} 
+
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{verbatim}
+\usepackage{pictex}  
+\usepackage{multimedia}
+\usepackage{listings}
+\usepackage{xcolor,colortbl}
+\usepackage[spanish]{babel} % language/hyphenation
+\usepackage{amsmath,amsfonts,amsthm} % Math packages
+\usepackage{amsbsy}
+\usepackage{amssymb}
+\usepackage{fancyvrb}
+\usepackage{sectsty} % Allows customizing section commands
+\allsectionsfont{\centering \normalfont\scshape} % Make all sections centered, the default font and small caps
+
+\usepackage{fancyhdr} % Custom headers and footers
+\pagestyle{fancyplain} % Makes all pages in the document conform to the custom headers and footers
+\fancyhead{} % No page header - if you want one, create it in the same way as the footers below
+\fancyfoot[L]{} % Empty left footer
+\fancyfoot[C]{} % Empty center footer
+\fancyfoot[R]{\thepage} % Page numbering for right footer
+\renewcommand{\headrulewidth}{0pt} % Remove header underlines
+\renewcommand{\footrulewidth}{0pt} % Remove footer underlines
+\setlength{\headheight}{13.6pt} % Customize the height of the header
+
+\numberwithin{equation}{section} % Number equations within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{figure}{section} % Number figures within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{table}{section} % Number tables within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs - comment this line for an assignment with lots of text
+
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} % Create horizontal rule command with 1 argument of height
+
+\title{	
+\normalfont \normalsize 
+\textsc{Centro de Investigaci\'on en Matem\'aticas (CIMAT). Unidad Monterrey} 
+\\ [10pt] 
+\horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
+\huge C\'omputo Estad\'istico\\Tarea 6 \\ 
+\horrule{2pt} \\[0.5cm] % Thick bottom horizontal rule
+}
+
+\author{Marcelo Alberto Sanchez Zaragoza} % Your name
+
+\date{\normalsize\today} % Today's date or a custom date
+
+\begin{document}
+\lstdefinestyle{customc}{
+  belowcaptionskip=1\baselineskip,
+  basicstyle=\footnotesize, 
+  frame=lrtb,
+  breaklines=true,
+  %frame=L,
+  %xleftmargin=\parindent,
+  language=C,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{red!40!black},
+  identifierstyle=\color{blue},
+  stringstyle=\color{purple},
+}
+
+\lstset{breakatwhitespace=true,
+  basicstyle=\footnotesize, 
+  commentstyle=\color{green},
+  keywordstyle=\color{blue},
+  stringstyle=\color{purple},
+  language=C++,
+  columns=fullflexible,
+  keepspaces=true,
+  breaklines=true,
+  tabsize=3, 
+  showstringspaces=false,
+  extendedchars=true}
+
+\lstset{ %
+  language=R,    
+  basicstyle=\footnotesize, 
+  numbers=left,             
+  numberstyle=\tiny\color{gray}, 
+  stepnumber=1,              
+  numbersep=5pt,             
+  backgroundcolor=\color{white},
+  showspaces=false,             
+  showstringspaces=false,       
+  showtabs=false,               
+  frame=single,                 
+  rulecolor=\color{black},      
+  tabsize=2,                  
+  captionpos=b,               
+  breaklines=true,            
+  breakatwhitespace=false,    
+  title=\lstname,             
+  keywordstyle=\color{blue},  
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},   
+  escapeinside={\%*}{*)},      
+  morekeywords={*,...}         
+} 
+
+
+\maketitle % Print the title
+
+\section{Problema 1}
+
+Es bien sabido que la regresi\'on ridge tiende a dar valores de coeficientes similares a las variables correlacionadas, mientras que lasso puede dar valores de coeficientes totalmente diferentes a las variables correlacionadas. Se explorar\'a esta propiedad en un entorno sencillo.\\
+Supongamos que $n=20, p = 2, x_{11}=x_{12}, x_{21}=x_{22}$. Adem\'as, supongamos que $y_1 + y_2 = 0$ y $x_{11} + x_{21} = 0$ y $x_{12} + x_{22} = 0$, de modo que la estimaci\'on del intercepto en minutos cuadros, regresi\'on de Ridge o en el modelo de lasso es cero: $\hat{\gamma} = 0$.
+  \begin{enumerate}
+    \item[a)] Plantea el problema de la optimizaci\'on con la regresi\'on ridge bajo estas suposiciones.
+    \item[b)] Argumenta que bajo estas suposiciones, las estimaciones de los coeficientes de ridge satisfacen $\hat{\beta}_1 = \hat{\beta}_2$. 
+    \item[c)] Planten el problema de la optimizaci\'on con la regresi\'on lasso bajo estas suposiciones.
+    \item[d)] Argumenta que en este contexto, los coeficientes de lasso $\hat{\beta}_1$ y $\hat{\beta}_2$ no son \'unicos; es decir, hay muhcas soluciones posibles al problema de optimizaci\'on en (c). Describe estas soluciones.
+  \end{enumerate}
+
+\textcolor{red}{\textbf{\large{Soluci\'on}}}\\
+
+Inciso a)\\
+Tenemos que una forma general de optimizaci\'on de regresi\'on ridge es igual a:\\
+    \begin{align*}
+        Min:~\sum_{i=1}^n(y_i - \hat{\beta_0} - \sum_{j=1}^p\hat{\beta}x_j)^2 + \lambda\sum_{i=1}^p\hat{\beta_i^2}
+    \end{align*}
+dado que el problema menciona que $\beta_0=0$ y que $n=p=2$ tenemos lo siguiente:
+  \begin{align*}
+    Min:~(y_1 + \hat{\beta_1}x_{11} - \hat{\beta_2}x_{12})^2 + (y_2 - \hat{\beta_1}x_{21} - \hat{\beta_2}x_{22} )^2 + \lambda(\hat{\beta_1}^2 + \hat{\beta_2}^2)
+  \end{align*}
+\begin{align*}
+    f(\hat{\beta_1}, \hat{\beta_2}) = (y_1 + \hat{\beta_1}x_{11} - \hat{\beta_2}x_{12})^2 + (y_2 - \hat{\beta_1}x_{21} - \hat{\beta_2}x_{22} )^2 + \lambda(\hat{\beta_1}^2 + \hat{\beta_2}^2)
+  \end{align*}
+
+Inciso b)\\
+Ahora vamos a derivar la expresi\'on anterior respecto a $\hat{\beta_1}$ y $\hat{\beta_2}$, posteriormente igualar a cero y encontrar expresiones para los beta.\\
+Derivando la expresi\'on vamos tenemos:\\
+  \begin{align*}
+  \frac{\partial f}{\partial \hat{\beta_1}} = 2(y_1 - \hat{\beta_1}x_{11} -\hat{\beta_2}x_{12} )(-x_{11}) + 2(y_2 - \hat{\beta_1}x_{21} -\hat{\beta_2}x_{22} )(-x_{21}) + 2\lambda\hat{\beta_1} = 0\\
+  \end{align*}
+  dado que $x_{12}=x_{11}$ y $x_{22}=x_{21}$, tenemos:
+  \begin{align*}
+    \hat{\beta_1}(x_{11}^2 + x_{21}^2 + \lambda) - y_1x_{11} - y_2x_{21} + \hat{\beta_2}(x_{11}^2 + x_{21}^2) = 0\\
+    \hat{\beta_1} = \frac{ y_1x_{11} + y_2x_{21} - \hat{\beta_2}(x_{11}^2 + x_{21}^2)  }{ (x_{11}^2 + x_{21}^2 + \lambda)  }~~~~~~~~~~
+  \end{align*}
+Analogamente realizamos el mismo procedimiento para $\hat{\beta_2}$ y obtuvimos:
+  \begin{align*}
+    \hat{\beta_2} = \frac{ y_1x_{11} + y_2x_{21} - \hat{\beta_1}(x_{11}^2 + x_{21}^2)  }{ (x_{11}^2 + x_{21}^2 + \lambda)  }
+  \end{align*}
+Observando estos resultados podemos decir que $\hat{\beta_1} = \hat{\beta_2}$.\\
+
+Inciso c)\\
+Ahora proponemos un problema de optimizaci\'on para la regresi\'on lasso, tenemos:
+
+\begin{align*}
+    Min:~(y_1 + \hat{\beta_1}x_{11} - \hat{\beta_2}x_{12})^2 + (y_2 - \hat{\beta_1}x_{21} - \hat{\beta_2}x_{22} )^2 + \lambda(|\hat{\beta_1}| + |\hat{\beta_2}|)
+  \end{align*}
+\begin{align*}
+    g(\hat{\beta_1}, \hat{\beta_2}) = (y_1 + \hat{\beta_1}x_{11} - \hat{\beta_2}x_{12})^2 + (y_2 - \hat{\beta_1}x_{21} - \hat{\beta_2}x_{22} )^2 + \lambda(|\hat{\beta_1}| + |\hat{\beta_2}|)
+  \end{align*}
+
+Inciso d)\\
+
+
+
+\section{Problema 2}
+
+Considerando el conjunto de datos $College$ de la libreria ISLR, vamos a predecir el n\'umero de solicitudes recibidas(APPs) usando las otras variables del conjunto de datos.
+\begin{enumerate}
+  \item[a)] Divide el conjunto de datos en un conjunto de entrenamiento y un conjunto de prueba y ajusta un modelo lineal usando m\'inimos cuadrados en el conjunto de entrenamiento. Reporta el error de prueba obtenido.
+  \item[b)] Ajusta un modelo de regresi\'on Ridge sobre el conjunto de entrenamiento, con $\alpha$ elegido por validaci\'on cruzada. Reporta el error de prueba obtenido.
+    \item[c)] Ajusta un mmodelo de lasso en el conjunto de entrenamiento, con $\alpha$ elegido por validaci\'on cruzada. Reporta el error de prueba obtenido, junto con el n\'umero de estimaciones de coeficientes no nulos.
+  \item[d)] Ajusta un modelo PCR en el conjunto de entrenamiento, con M elegido por la validaci\'on cruzada. Reporta el error de prueba obtenido, junto con el valor de M seleccionado mediante validaci\'on cruzada.
+  \item[e)] Ajusta un modelo PLS en el conjunto de entrenamiento, con M elegido por la validaci\'on cruzada. Informe el error de prueba obtenido, junto con el valor de M seleccionado mediante validaci\'on cruzada.
+  \item[f)] Comenta los resultados obtenidos. ¿ Con qu\'e precisi\'on podemos predecir el n\'umero de solicitudes de estudios universitarios recibidas? ¿ Hay mucha diferencia entre los errores de prueba resultantes de estos cinco enfoques?
+\end{enumerate}
+
+\textcolor{red}{\textbf{\large{Soluci\'on}}}\\
+
+Inciso a)\\
+
+Realizamos la divisi\'on de los datos en la siguientes lineas de c\'odigo.
+<<eval=TRUE,echo=TRUE,comment=NA,warning=FALSE,message=FALSE,fig.width=5.0,fig.height=5.0>>=
+library(ISLR)
+set.seed(1)
+sum(is.na(College))
+length(College[,1])
+
+train.size = dim(College)[1] / 2 #621
+train = sample(1:dim(College)[1], train.size)
+length(train)
+test = -train
+College.train = College[train, ]
+College.test = College[test, ]
+length(College.test[,1])
+length(College.train[,1])
+@
+
+
+Inciso b)\\
+
+En este caso ajustamos un modelo de regresi\'on Ridge sobre el conjunto de entrenamiento, donde primero encontramos el valor de $\alpha$.
+<<eval=TRUE,echo=TRUE,comment=NA,warning=FALSE,message=FALSE,fig.width=5.0,fig.height=5.0>>=
+library(glmnet)
+train.mat = model.matrix(Apps~., data=College.train)
+test.mat = model.matrix(Apps~., data=College.test)
+grid = 10^seq(10, -2, length=100)
+mod.ridge = cv.glmnet(train.mat, 
+                      College.train[, "Apps"], 
+                      alpha=0, lambda=grid, 
+                      thresh=1e-12)
+lambda.best = mod.ridge$lambda.min
+lambda.best
+
+ridge.pred = predict(mod.ridge, newx=test.mat, s=lambda.best)
+mean((College.test[, "Apps"] - ridge.pred)^2)
+
+@
+El valor de $\alpha = 0.01$ y un error de 1135714.\\
+
+Inciso c)\\
+
+En este caso ajustamos un modelo de regresi\'on lasso sobre el conjunto de entrenamiento, donde primero encontramos el valor de $\alpha$.
+<<eval=TRUE,echo=TRUE,comment=NA,warning=FALSE,message=FALSE,fig.width=5.0,fig.height=5.0>>=
+library(glmnet)
+mod.lasso = cv.glmnet(train.mat, College.train[, "Apps"], 
+                      alpha=1, lambda=grid, 
+                      thresh=1e-12)
+lambda.best = mod.lasso$lambda.min
+lambda.best
+
+lasso.pred = predict(mod.lasso, newx=test.mat, s=lambda.best)
+mean((College.test[, "Apps"] - lasso.pred)^2)
+
+mod.lasso = glmnet(model.matrix(Apps~., data=College), 
+                   College[, "Apps"], 
+                   alpha=1)
+predict(mod.lasso, s=lambda.best, type="coefficients")
+@
+El valor de $\alpha = 0.01$ y un error de 1135659 y mostramos aquellos coeficientes que son distintos de cero.\\
+
+Inciso d)\\
+
+Ajustamos un modelo PCR en el conjunto de entrenamiento y se muestra el gr\'afico.
+<<eval=TRUE,echo=TRUE,comment=NA,warning=FALSE,message=FALSE,fig.width=5.0,fig.height=5.0>>=
+library(pls)
+pcr.fit = pcr(Apps~., data=College.train, scale=T, validation="CV")
+validationplot(pcr.fit, val.type="MSEP")
+
+pcr.pred = predict(pcr.fit, College.test, ncomp=10)
+length(pcr.pred)
+length(College.test[,'Apps'])
+mean((College.test[, "Apps"] - pcr.pred[1:389] )^2)
+@
+El error obtenido fue 1723100, con 10 componentes.\\
+
+Inciso e)\\
+
+Ajustamos un modelo PLS en el conjunto de entrenamiento y se muestra el gr\'afico.
+<<eval=TRUE,echo=TRUE,comment=NA,warning=FALSE,message=FALSE,fig.width=5.0,fig.height=5.0>>=
+
+pls.fit = plsr(Apps~., data=College.train, scale=T, validation="CV")
+validationplot(pls.fit, val.type="MSEP")
+
+pls.pred = predict(pls.fit, College.test, ncomp=10)
+mean((College.test[, "Apps"] - pls.pred[1:389] )^2) #156
+@
+El error obtenido fue 1131661, con 10 componentes.\\
+
+Inciso f)\\
+
+<<eval=TRUE,echo=TRUE,comment=NA,warning=FALSE,message=FALSE,fig.width=5.0,fig.height=5.0>>=
+
+test.avg = mean(College.test[, "Apps"])
+#lm.test.r2 = 1 - mean((College.test[, "Apps"] - lm.pred)^2) /mean((College.test[, "Apps"] - test.avg)^2)
+ridge.test.r2 = 1 - mean((College.test[, "Apps"] - 
+                  ridge.pred)^2) /mean((College.test[, "Apps"]
+                      - test.avg)^2)
+
+lasso.test.r2 = 1 - mean((College.test[, "Apps"] - 
+                  lasso.pred)^2) /mean((College.test[, "Apps"] 
+                    - test.avg)^2)
+
+pcr.test.r2 = 1 - mean((College.test[, "Apps"] - 
+                  pcr.pred[1:389] )^2) /mean((College.test[, "Apps"]
+                    - test.avg)^2)
+
+pls.test.r2 = 1 - mean((College.test[, "Apps"] - 
+                  pls.pred[1:389] )^2) /mean((College.test[, "Apps"]
+                    - test.avg)^2)
+
+barplot(c(ridge.test.r2, lasso.test.r2, pcr.test.r2, pls.test.r2), 
+        col="green", names.arg=c("Ridge", "Lasso", "PCR", "PLS"), 
+        main="Test R-squared")
+@
+En el gr\'afico observamos que el mejor resultados dio para poder predecir el n\'umero de solicitudes de estudios universitarios es PCR ya que su $R^2$ fue menor que todos los dem\'as, igual podemos observar que los valores para Ridge, Lasso y PLS se observan muy parecidas entre ellas.
+\end{document}
