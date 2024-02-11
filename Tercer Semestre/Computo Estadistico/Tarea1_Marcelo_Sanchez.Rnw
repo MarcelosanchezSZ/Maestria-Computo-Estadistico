@@ -1,0 +1,1033 @@
+\documentclass[paper=letter, fontsize=11pt]{scrartcl} 
+
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{verbatim}
+\usepackage{pictex}  
+\usepackage{multimedia}
+\usepackage{listings}
+\usepackage{xcolor,colortbl}
+\usepackage[spanish]{babel} % language/hyphenation
+\usepackage{amsmath,amsfonts,amsthm} % Math packages
+\usepackage{amsbsy}
+\usepackage{amssymb}
+\usepackage{fancyvrb}
+\usepackage{sectsty} % Allows customizing section commands
+\allsectionsfont{\centering \normalfont\scshape} % Make all sections centered, the default font and small caps
+
+\usepackage{fancyhdr} % Custom headers and footers
+\pagestyle{fancyplain} % Makes all pages in the document conform to the custom headers and footers
+\fancyhead{} % No page header - if you want one, create it in the same way as the footers below
+\fancyfoot[L]{} % Empty left footer
+\fancyfoot[C]{} % Empty center footer
+\fancyfoot[R]{\thepage} % Page numbering for right footer
+\renewcommand{\headrulewidth}{0pt} % Remove header underlines
+\renewcommand{\footrulewidth}{0pt} % Remove footer underlines
+\setlength{\headheight}{13.6pt} % Customize the height of the header
+
+\numberwithin{equation}{section} % Number equations within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{figure}{section} % Number figures within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{table}{section} % Number tables within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs - comment this line for an assignment with lots of text
+
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} % Create horizontal rule command with 1 argument of height
+
+\title{	
+\normalfont \normalsize 
+\textsc{Centro de Investigaci\'on en Matem\'aticas (CIMAT). Unidad Monterrey} 
+\\ [10pt] 
+\horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
+\huge C\'omputo Estad\'istico\\Tarea 1 \\ 
+\horrule{2pt} \\[0.5cm] % Thick bottom horizontal rule
+}
+
+\author{Marcelo Alberto Sanchez Zaragoza} % Your name
+
+\date{\normalsize\today} % Today's date or a custom date
+
+\begin{document}
+\lstdefinestyle{customc}{
+  belowcaptionskip=1\baselineskip,
+  basicstyle=\footnotesize, 
+  frame=lrtb,
+  breaklines=true,
+  %frame=L,
+  %xleftmargin=\parindent,
+  language=C,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{red!40!black},
+  identifierstyle=\color{blue},
+  stringstyle=\color{purple},
+}
+
+\lstset{breakatwhitespace=true,
+  basicstyle=\footnotesize, 
+  commentstyle=\color{green},
+  keywordstyle=\color{blue},
+  stringstyle=\color{purple},
+  language=C++,
+  columns=fullflexible,
+  keepspaces=true,
+  breaklines=true,
+  tabsize=3, 
+  showstringspaces=false,
+  extendedchars=true}
+
+\lstset{ %
+  language=R,    
+  basicstyle=\footnotesize, 
+  numbers=left,             
+  numberstyle=\tiny\color{gray}, 
+  stepnumber=1,              
+  numbersep=5pt,             
+  backgroundcolor=\color{white},
+  showspaces=false,             
+  showstringspaces=false,       
+  showtabs=false,               
+  frame=single,                 
+  rulecolor=\color{black},      
+  tabsize=2,                  
+  captionpos=b,               
+  breaklines=true,            
+  breakatwhitespace=false,    
+  title=\lstname,             
+  keywordstyle=\color{blue},  
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},   
+  escapeinside={\%*}{*)},      
+  morekeywords={*,...}         
+} 
+
+
+\maketitle % Print the title
+
+\section{Problema 1}
+La siguiente tabla muestra los resultados parciales de dos encuestas que forman parte de un estudio para evaluar el desempe\~{n}o del Primer Ministro del Canad\'a. Se tom\'o una muestra aleatoria de 1600 ciudadanos canadienses mayores de edad y en los renglones se observa que 944 ciudadanos aprobaban el desempe\~{n}o del funcionario, mientras que las columnas muestran que, seis meses despu\'es de la primera encuesta, s\'olo 880 aprueban su desempe\~{n}o.\\
+
+
+\begin{table}[t]
+  \begin{center}
+    \begin{tabular}{| r | l | l| c |}
+      Primera encuesta & Y=1,Aprueba(S.E) & Y=0, Desaprueba(S.E) & Total \\ \hline
+      X=1, Aprueba & 794 & 150 & 944 \\
+      X=2, Desaprueba & 86 & 570 & 656\\ \hline
+      Total & 880 & 720 & 1600 \\ \hline
+    \end{tabular}
+    \caption{Encuesta con datos de primera y segunda encuentas(S.E.)}
+    \label{tab:fruta}
+  \end{center}
+\end{table}
+
+
+Inciso a)\\
+Escriba la logverosimilitud correspondiente. Muestre expl\'icitamente (i. e. maximizando la logverosimilitud que el estimador m\'aximo verosimilitud para $\beta_1$ 1 es el logaritmo de la tasa de momios de la tabla dada (En general, en regresi\'on log\'istica los estimadores de m\'axima verosimilitud no tienen una forma expl\'icita, sin embargo, en el presente caso si)\\
+
+Inciso b)\\
+Sea $p_1$ la proporci\'on de ciudadanos que aprueban el desempe\~{n}o del ministro al tiempo inicial y sea $p_2$ la proporci\'on correspondiente seis meses despu\'es. Considere la hip\'otesis: $H0: p_1 = p _2$ , Â¿C\'omo puede hacerse esta prueba?\\
+
+\textcolor{red}{\textbf{\large{Soluci\'on}}}\\
+Inciso a)\\
+Para el primer inciso tenemos que partir de lo siguiente:\\
+
+Observamos que $Y|x$ tiene distribuci\'on Bernoulli ya que hay dos posibles resultados, aprobaci\'on o no al desempe\~{n}o del Primer Ministro. Por lo que tenemos: $P(Y=1|x) = p$ y $P(Y=0|x) = 1 - p$ y bajo el modelo de regresi\'on log\'istica, tenemos: $p_i = P(Y_i=1|x_i) = \frac{1}{1 + e^{-\beta_0 - \beta_1x_i}}$.\\
+La funci\'on de verosimilitud es:
+
+  \begin{align*}
+		L(\beta) = L(\beta|y_i|x_1,...,y_{1600}|x_{1600}) = \prod_{i=0}^nf_{\beta}(Y_i|x_i) = \prod_{i=1}^np_i^{y_i}(1-p_i^{1-y_i})
+  \end{align*}
+donde $p_i = \frac{1}{1 + e^{-\beta_0 - \beta_1x_i}}$, tomando logaritmo a $L(\beta)$, as\'i tenemos la logverosimilitud:\\
+  \begin{center}
+  $l(\beta) = log(L(\beta)) = \sum_{i=1}^{n}y_ilog(p_i) + (1-y_i)log(1-p_i)$
+  \end{center}
+Ahora queremos encontrar la derivada respecto de $\beta$, pero antes vamos a encontrar la derivada de $\frac{\partial p_i}{\partial \beta}$, pero como tenemos dos variables en este caso vamos a encontrar la derivada respecto a $\beta_0$ y $\beta_1$, as\'i:\\
+  \begin{align*}
+	\frac{\partial p_i}{\partial \beta_0} = -\frac{(e^{-\beta_0 - \beta_1x_i})(-1)}{(1 + e^{-\beta_0 - \beta_1x_i})^2} = p_i(1-p_i)\\
+	\frac{\partial p_i}{\partial \beta_1} = -\frac{(e^{-\beta_0 - \beta_1x_i})(x_i)}{(1 + e^{-\beta_0 - \beta_1x_i})^2} = x_ip_i(1-p_i)\\
+  \end{align*}
+as\'i:
+
+  \begin{align*}
+    \frac{\partial l(\beta)}{\partial \beta} = \sum_{i=1}^{n}y_i\frac{1}{p_i}\frac{\partial p_i}{\partial \beta} - (1-y_i)\frac{1}{(1-y_i)}\frac{\partial p_i}{\partial \beta} \\
+    = \sum_{i=1}^{n}\begin{bmatrix} \frac{y_i}{p_i} - \frac{1-y_i}{1-p_i} \end{bmatrix}\frac{\partial p_i}{\partial \beta}~~~~~~~~~~~~\\
+    = \sum_{i=1}^{n}\begin{bmatrix} \frac{y_i - p_i}{p_i(1-p_i)} \end{bmatrix}\frac{\partial p_i}{\partial \beta}~~~~~~~~~~~~
+  \end{align*}
+Ahora sustituimos la derivada que encontramos respecto a $\beta_0$ en lo anterior y tenemos:
+  \begin{align*}
+    \frac{\partial l(\beta)}{\partial \beta} = \sum_{i=1}^{n}\begin{bmatrix} \frac{y_i - p_i}{p_i(1-p_i)} \end{bmatrix}[p_i(1-p_i)] = \sum_{i=1}^{n}(y_i - p_i)
+  \end{align*}
+An\'alogamente para $\beta_1$, es:
+  \begin{align*}
+    \frac{\partial l(\beta)}{\partial \beta} = \sum_{i=1}^{n}\begin{bmatrix} \frac{y_i - p_i}{p_i(1-p_i)} \end{bmatrix}[x_ip_i(1-p_i)] = \sum_{i=1}^{n}x_i(y_i - p_i)
+  \end{align*}
+Ya que tenemos nuestras expresiones sustituidas las podemos igualar a cero y se puede obsevar que n = 1600, adem\'as hay casos para ambas variables $x$ y $y$. Para cada variable sabemos que $x = \{0,1\}$ y $y = \{0,1\}$. De esta forma podemos ir separando nuestra suma en peque\~{n}as sumas dependiendo los posibles casos. As\'i para la expre\'on donde se sustituyo la derivada respecto a $\beta_0$, tenemos:\\
+\begin{align*}
+    \frac{\partial l(\beta)}{\partial \beta} = \sum_{i=1}^{n}(y_i - p_i) = \sum_{\substack{i=1\\y_i=1\\x_i=1}}^{794}(1 -  \frac{1}{1 + e^{-\beta_0 - \beta_1}}) + \sum_{\substack{i=1\\y_i=0\\x_i=1}}^{150}(0 -  \frac{1}{1 + e^{-\beta_0 - \beta_1}}) + \sum_{\substack{i=1\\y_i=1\\x_i=0}}^{86}(1 -  \frac{1}{1 + e^{-\beta_0}}) + \\
+    \sum_{\substack{i=1\\y_i=0\\x_i=0}}^{794}(0 -  \frac{1}{1 + e^{-\beta_0}}) = 794 - \frac{794}{1 + e^{-\beta_0 - \beta_1}} - \frac{150}{1 + e^{-\beta_0 - \beta_1}} + 86 - \frac{86}{1 + e^{-\beta_0}} - \frac{570}{1 + e^{-\beta_0}}\\ = 880 - \frac{944}{1 + e^{-\beta_0 - \beta_1}} - \frac{656}{1 + e^{-\beta_0}} = 0~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  \end{align*}
+Donde podemos mover las fracciones de un lado y tendremos: $880 = \frac{944}{1 + e^{-\beta_0 - \beta_1}} + \frac{656}{1 + e^{-\beta_0}}$.\\
+An\'alogamente volvemos a hacer las peque\~{n}as sumas con la expresi\'on donde se sustituyo la derivada con respecto a $\beta_1$, as\'i:
+
+\begin{align*}
+    \frac{\partial l(\beta)}{\partial \beta} = \sum_{i=1}^{n}x_i(y_i - p_i) = \sum_{\substack{i=1\\y_i=1\\x_i=1}}^{794}(1)(1 -  \frac{1}{1 + e^{-\beta_0 - \beta_1}}) + \sum_{\substack{i=1\\y_i=0\\x_i=1}}^{150}(1)(0 -  \frac{1}{1 + e^{-\beta_0 - \beta_1}}) + 0 + 0  \\= 794 - \frac{794}{1 + e^{-\beta_0 - \beta_1}} - \frac{150}{1 + e^{-\beta_0 - \beta_1}} =  794 - \frac{944}{1 + e^{-\beta_0 - \beta_1}} = 0~~~~~~~~~~~~~~~~~~
+  \end{align*}
+Volvemos a colocar las fracciones de un lado y tenemos la siguiente expresi\'on: $794 = \frac{944}{1 + e^{-\beta_0 - \beta_1}}$.\\
+Lo que nos resta hacer es realizar un peque\~{n}o sistema de ecuaciones para encontrar los valores estimados para $\beta_0$ y $\beta_1$, como primer paso vamos a sustituir lo que encontramos recientemente ($794 = \frac{944}{1 + e^{-\beta_0 - \beta_1}}$) en $880 = \frac{944}{1 + e^{-\beta_0 - \beta_1}} + \frac{656}{1 + e^{-\beta_0}}$, as\'i:
+
+  \begin{align*}
+    880 = 944(\frac{794}{944}) + \frac{656}{1 + e^{-\beta_0}}\\
+    \frac{880-794}{656} = \frac{1}{1 + e^{-\beta_0}}\\
+    \hat{\beta}_0 = - log(\frac{656}{86}-1) = -1\ldotp 8912
+  \end{align*}
+Ahora solo sustituimos en $794 = \frac{944}{1 + e^{-\beta_0 - \beta_1}}$ y encontramos que $\hat{\beta}_1 = -log(\frac{944}{794}-1) - \beta_0 = 3\ldotp 5577$.\\
+
+Inciso b)\\
+Para este inciso debemos realizar una prueba de igualdad de proporciones, en primer lugar debemos establecer la hip\'otesis nula y alternativa:
+
+  \begin{align*}
+    H_0: p_1 = p_2~~vs~~H_1: p_1\neq p_2
+  \end{align*}
+El estad\'istico de prueba $z$ es:
+  \begin{align*}
+    z = \frac{(x_1/n_1) - (x_2/n_2)}{\sqrt{m(1-m)[(1/n_1) + (1/n_2)]}}
+  \end{align*}
+donde $m = \frac{x_1 + x_2}{n_1 + n_2}$. Ahora solo debemos sustituir los valores, en este caso $p_1 = \frac{944}{1600}, p_2 = \frac{880}{1600}, m = \frac{944+880}{1600+1600}$, as\'i:
+  \begin{align*}
+    z = \frac{0\ldotp59 - 0\ldotp55}{\sqrt{0\ldotp57(1-0\ldotp57)[(1/1600) + (1/1600)]}} = 2\ldotp 2852\\
+  \end{align*}
+Tambi\'en podemos observar el valor del p-valor donde tenemos que p-valor $= P(Z<-2\ldotp2852) + P(Z>2\ldotp2852) = 0\ldotp 0223$.\\
+Dado que el valor tabular con $\alpha = 0\ldotp 05$ es 1.96, observamos que nuestro estad\'istico de prueba es mayor por lo que rechazamos $H_0$.\\ Podemos decir que la proporci\'on de personas que aprueban el desempe\~{n}o del Primer Ministro de Canad\'a ha cambiado desp\'ues de 6 meses.\\
+
+
+\section{Problema 2}
+
+Se tiene la siguiente tabla donde se eligen varios niveles de ronquidos y se ponen en relaci\'on con una enfermedad card\'iaca. Se toman como puntuaciones relativas de ronquidos los valores \{0 2 4 5\}.\\
+
+Ajuste un modelo lineal generalizado logit y probit ($investigar~sobre~el~link~probit$) para analizar si existe una relaci\'on entre los ronquidos y la posibilidad de tener una enfermedad cardiaca.\\
+
+\textcolor{red}{\textbf{\large{Soluci\'on}}}\\
+
+<<eval=TRUE,echo=TRUE,comment=NA,warning=FALSE,message=FALSE,fig.width=5.0,fig.height=5.0>>=
+## Lo primero que hicimos fue ajustar un modelo lineal generalizado logit
+roncas <- c(0, 2, 4, 5)
+modelo.logit <- glm( cbind( SI = c(24, 35, 21, 30), 
+                    NO = c(1355, 603, 192, 224) ) ~ roncas,
+                   family = binomial(link = logit) )
+
+summary(modelo.logit)$coefficients
+
+## El segundo modelo lineal generado probit
+roncas <- c(0, 2, 4, 5)
+modelo.probit <- glm( cbind( SI = c(24, 35, 21, 30),
+                      NO = c(1355, 603, 192, 224) ) ~ roncas,
+                     family = binomial(link = probit) )
+
+summary(modelo.probit)$coefficients
+@
+Hay que comenzar con el primer caso, la regresi\'on logistica, en dichos resultados el valor para $\beta$ fue de 0.3973, podemos decir que no hay mucho aporte por parte de la variable $Roncar$ para decir si hay una enfermedad cardiaca.\\
+En la segundo modelo lineal tampoco proporciona informaci\'on sobre la variable $Roncar$ al problema de tener una enfermendad cardiaca.\\
+Finalmente observamos que a medida que crecen la cantidad de ronquidos no da como resultado una enfermedad cardiaca. Observando los resultados de cada modelo podemos decir que de acuerdo al AIC nos inclinamos por el resultado que nos dio el modelo lineal probit.\\
+
+\section{Problema 3}
+Entre los cangrejos cacerola se sabe que cada hembra tiene un macho en su nido, pero puede tener m\'as machos concubinos. Se considera que la variable respuesta es el n\'umero de concubinos y las variables explicativas son color, estado de la espina central, peso y anchura del caparaz\'on\\
+Realiza e interpretar los resultados de ajustar un modelo lineal generalizado tipo poisson.\\
+
+
+\textcolor{red}{\textbf{\large{Soluci\'on}}}\\
+<<eval=TRUE,echo=TRUE,comment=NA,warning=FALSE,message=FALSE,fig.width=5.0,fig.height=5.0>>=
+
+tabla <- read.csv("C:/Users/Marcelo Sanchez/OneDrive/Escritorio/Tercer Semestre CIMAT/Computo Estadistico/Extra/Ejemplos Modelos GLM/Cangrejos.txt"
+                 , header = T)
+dimnames(tabla)[[2]] <- c("color","spine","width","satell","weight")
+names(tabla)
+@
+
+Realizamos un primer gr\'afico que nos ayuda a observar la dispersi\'on de la cantidad de machos concubinos para cada hembra de acuerdo al ancho del caparaz\'on.\\
+<<eval=TRUE,echo=TRUE,comment=NA,warning=FALSE,message=FALSE,fig.width=5.0,fig.height=5.0>>=
+# Grafico de dispersion
+plot.tabla <- aggregate(rep (1, nrow(tabla)),
+                      list(Sa = tabla$satell, W = tabla$width), sum)
+plot (y = plot.tabla$Sa , x = plot.tabla$W, xlab = "Ancho (cm)",
+      ylab = "Numero de Concubinos", bty = "L", axes = F, type = "n")
+axis(2, at = 1:15)
+axis(1, at = seq(20, 34, 2))
+text(y = plot.tabla$Sa , x = plot.tabla$W, labels = plot.tabla$x)
+
+############### Se puede ajustar un modelo GLM de Poisson.
+###############
+log.fit <- glm(satell ~ width, family = poisson ,
+               data = tabla)
+summary(log.fit )
+p0 = log.fit$null.deviance - log.fit$deviance ## calculamos la residual 
+p0
+1 - pchisq(p0,1)
+
+log.fit2 <- glm(satell ~ weight, family = poisson ,
+               data = tabla)
+summary(log.fit2 )
+p0 = log.fit2$null.deviance - log.fit2$deviance ## calculamos la residual 
+p0
+1 - pchisq(p0,1)
+
+
+log.fit3 <- glm(satell ~ spine, family = poisson ,
+               data = tabla)
+summary(log.fit3 )
+p0 = log.fit3$null.deviance - log.fit3$deviance ## calculamos la residual 
+p0
+1 - pchisq(p0,1)
+
+log.fit4 <- glm(satell ~ color, family = poisson ,
+               data = tabla)
+summary(log.fit4 )
+p0 = log.fit4$null.deviance - log.fit4$deviance ## calculamos la residual 
+p0
+1 - pchisq(p0,1)
+
+log.fit5 <- glm(satell ~ width + color + spine + weight, family = poisson ,
+               data = tabla)
+summary(log.fit5 )
+p0 = log.fit5$null.deviance - log.fit5$deviance ## calculamos la residual 
+p0
+1 - pchisq(p0,1) 
+
+
+log.fit6 <- glm(satell ~ color + weight, family = poisson ,
+               data = tabla)
+summary(log.fit6 )
+p0 = log.fit6$null.deviance - log.fit6$deviance ## calculamos la residual 
+p0
+1 - pchisq(p0,1) 
+
+@
+Posteriormente realizamos diversos modelos para observar que tan bien se  ajustan a nuestros datos, ya que la intenci\'on es encontrar un buen modelo nos vamos a apoyar del AIC que nos regreso cada uno de ellos. Con este criterio encontramos que el mejor modelo es cuando tomamos en cuenta las 4 variables(width, color, spine, y weight) pero observamos que solo dos variables parecen ser significativas que son el color y weight. Al realizar el modelo tomando en cuenta estas dos variables mejora un poco el valor del AIC.\\
+
+Una vez que exploramos los anteriores casos vamos a realizar un nuevo ajuste a los datos para trabajar con la sobredispersi\'on.
+<<eval=TRUE,echo=TRUE,comment=NA,warning=FALSE,message=FALSE,fig.width=5.0,fig.height=5.0>>=
+#### Nuevo ajuste a los datos
+
+t1 <- tabla[order(tabla$width),]
+
+int1 <- t1[t1$width<23.25,]
+int2 <- t1[t1$width>23.25 & t1$width<24.25,]
+int3 <- t1[t1$width>24.25 & t1$width<25.25,]
+int4 <- t1[t1$width>25.25 & t1$width<26.25,]
+int5 <- t1[t1$width>26.25 & t1$width<27.25,]
+int6 <- t1[t1$width>27.25 & t1$width<28.25,]
+int7 <- t1[t1$width>28.25 & t1$width<29.25,]
+int8 <- t1[t1$width>29.25,]
+
+
+s <- c("23.25","23.25-24.25","24.25-25.25","25.25-26.25",
+            "26.25-27.25","27.25-28.25","28.25-29.25",">29.25")
+
+casos <- c(length(int1$color), length(int2$color),
+               length(int3$color),length(int4$color),
+               length(int5$color),length(int6$color),
+               length(int7$color),length(int8$color))
+
+a_m <- c(mean(int1$width),mean(int2$width),mean(int3$width),
+                 mean(int4$width),mean(int5$width),mean(int6$width),
+                 mean(int7$width),mean(int8$width))
+
+s_g <- c(sum(int1$satell),sum(int2$satell),sum(int3$satell),
+              sum(int4$satell),sum(int5$satell),sum(int6$satell),
+              sum(int7$satell),sum(int8$satell))
+
+tasa <- c(sum(int1$satell)/length(int1$color),
+              sum(int2$satell)/length(int2$color),
+            sum(int3$satell)/length(int3$color),
+            sum(int4$satell)/length(int4$color),
+            sum(int5$satell)/length(int5$color),
+            sum(int6$satell)/length(int6$color),
+            sum(int7$satell)/length(int7$color),
+            sum(int8$satell)/length(int8$color))
+
+Tabla_final <- data.frame(cbind(s,casos,
+                        a_m,s_g,tasa))
+
+## Finalmente obtenemos toda la información para el modelo
+S_total <- c(14, 20 ,67, 105, 63, 93, 71, 72)
+
+width <- c(22.6928571428571, 23.8428571428571, 24.775 ,
+         25.8384615384615 ,26.7909090909091, 27.7375,
+         28.6666666666667 ,30.4071428571429)
+
+lcases <- log(c(14, 14, 28, 39, 22, 24, 18 ,14)) 
+
+log.fit = glm(S_total ~ width, family = poisson,
+              offset=lcases )
+summary(log.fit )
+
+
+@
+Finalmente observamos que al realizar dicho ajuste nuesto modelo obtiene un mejor valor de AIC por lo que ya no observamos la sobredispersi\'on.\\
+
+
+\section{Problema 4}
+Suponga ($x_1, y_1$),...,($x_n$, $y_n$) observaciones independientes de variables aleatorias definidas como sigue:\\
+
+  \begin{align*}
+		Y_i ~ Bernoulli(p),~~i=1,..n.\\
+		X_i|{Y_i=1} ~ N(\mu_1, \sigma^2)\\
+		X_i|{Y_i=0} ~ N(\mu_0, \sigma^2)
+  \end{align*}
+
+Usando el Teorema de Bayes, muestre que $P(Y_i = 1|X_i)$ satisface el modelo de regresi\'on log\'istica, esto es\\
+  \begin{align*}
+		logit(P(Y_i=1|X_i)) = \alpha + \beta X_i
+  \end{align*}
+con $\beta = (\mu_1 - \mu_0)/\sigma^2$.\\
+
+\textcolor{red}{\textbf{\large{Soluci\'on}}}\\
+
+Podemos partir de los siguiente:\\
+  \begin{align*}
+		\frac{p}{1-p} = \frac{P(y_i = 1|x_i)}{P(y_i = 0|x_i)} = \frac{  \frac{P(y_i=1)P(x_i|y_1=1)}{\sum_{i=1}^n P(y_i) P(x_i|y_i)} }{ \frac{P(y_i=0)P(x_i|y_1=0)}{\sum_{i=1}^n P(y_i) P(x_i|y_i)} } = \frac{P(y_i=1)P(x_i|y_i=1)}{P(y_i=0)P(x_i|y_i=0)}\\
+		= \frac{pP(x_i|y_i=1)}{(1-p)P(x_i|y_i=0)} = \frac{p(\frac{1}{\sigma^2\sqrt{2\pi}} e^{\frac{-(x_i - \mu_1)^2}{2\sigma^2}} )}{ (1-p)(\frac{1}{\sigma^2\sqrt{2\pi}} e^{\frac{-(x_i - \mu_0)^2}{2\sigma^2}} )  }
+  \end{align*}
+aplicamos logaritmo a la expresi\'on anterior y tenemos:
+  \begin{align*}
+    log(\frac{p}{1-p}) = log\left[p \left( \frac{1}{\sigma^2\sqrt{2\pi}} e^{\frac{-(x_i - \mu_1)^2}{2\sigma^2}} \right) \right] - log\left[(1-p) \left( \frac{1}{\sigma^2\sqrt{2\pi}} e^{\frac{-(x_i - \mu_0)^2}{2\sigma^2}} \right) \right]\\
+    = log\left( \frac{p}{1-p}\right) + log\left( \frac{1}{\sigma^2\sqrt{2\pi}} e^{\frac{-(x_i - \mu_1)^2}{2\sigma^2}}  \right) - log\left( \frac{1}{\sigma^2\sqrt{2\pi}} e^{\frac{-(x_i - \mu_0)^2}{2\sigma^2}}  \right) \\
+    = log\left( \frac{p}{1-p}\right) + log\left(\frac{1}{\sigma^2\sqrt{2\pi}}\right) - \frac{(x_i-\mu_1)^2}{2\sigma^2} - log\left(\frac{1}{\sigma^2\sqrt{2\pi}}\right) + \frac{(x_i-\mu_0)^2}{2\sigma^2} \\
+    = log\left( \frac{p}{1-p}\right) - \frac{1}{2}\left(\frac{x_i^2 - 2x_i\mu_1 + \mu_1^2}{\sigma^2}  \right) + \frac{1}{2}\left(\frac{x_i^2 - 2x_i\mu_0 + \mu_0^2}{\sigma^2}  \right)\\
+    = log\left( \frac{p}{1-p}\right) + \frac{x_i\mu_1}{\sigma^2} - \frac{\mu_1^2}{2\sigma^2} - \frac{x_i\mu_0}{\sigma^2} + \frac{\mu_0^2}{2\sigma^2}\\
+    = \left[ log\left( \frac{p}{1-p}\right) + \frac{1}{2}\left( \frac{\mu_0^2 - \mu_1^2}{\sigma^2} \right)  \right] + \frac{(\mu_1 - \mu_0)}{\sigma^2}x_i\\ = \alpha + \beta x_i
+  \end{align*}
+donde $\beta = \frac{\mu_1 - \mu_0}{\sigma^2}$ y $\alpha = log\left( \frac{p}{1-p}\right) + \frac{1}{2}\left( \frac{\mu_0^2 - \mu_1^2}{\sigma^2} \right)$.\\
+
+\section{Problema 5}
+Cuando usamos un modelo de regresi\'on log\'istica para clasificaci\'on, tenemos que definir el umbral, $p$, a partir del cual declaramos un "positivo".\\
+Las curvas $ROC$ grafucan las tasas $TPR$ vs $FPR$ para diferentes umbrales $p$.
+  \begin{align*}
+		TPR = True~Positive~Rate = \frac{TP}{P} = "sensitividad"\\
+		FPR = False~Positive~Rate = \frac{FP}{N} = 1 - "especificidad"
+  \end{align*}
+  
+\begin{enumerate}
+    \item[a)] La gr\'afica de $TPR$ vs $FPR$ puede interpretarse como una gr\'afica de "poder" vs error tipo I".
+    \item[b)] Idealmente, una regla de decisi\'on estar\'ia en el punto (0,1)
+    \item[c)] El \'area bajo la curva, $AUC$, puede verse, es la probabilidad de un individuo de los positivos, tomando al azar, tenga un riesgo estimado mayor que un individuo de los negativos, tomado al azar.
+    \item[d)] El estad\'istivo $J$ de Youden, es una medida que, con un s\'olo n\'umero, trata de capturar el desempe\~{n}o de una prueba de diagn\'ostico. Es la m\'axima distancia vertical, entre la diagonal y la curva $ROC$, o equivalentemente: $J = sensitividad - (1-especifidad)$
+  \end{enumerate}
+
+Construya la curva $ROC$ para el problema de da\~{n}o coronario y su relaci\'on con la edad visto en la clase 3 del curso.\\
+
+\textcolor{red}{\textbf{\large{Soluci\'on}}}\\
+
+En la siguiente secci\'on de c\'odigo se realizo la implementaci\'on para encontrar la curva $ROC$ para el problema de da\~{n}o coronario.
+<<eval=TRUE,echo=TRUE,comment=NA,warning=FALSE,message=FALSE,fig.width=5.0,fig.height=5.0>>=
+# primero cargamos nuestra libreria
+library(ROCR)
+
+edad <- c(20,23,24,25,25,26,26,28,28,29,30,30,30,
+          30,30,30,32,32,33,33,34,34,34,34,34,35,
+          35,36,36,36,37,37,37,38,38,39,39,40,40,
+          41,41,42,42,42,42,43,43,43,44,44,44,44,
+          45,45,46,46,47,47,47,48,48,48,49,49,49,
+          50,50,51,52,52,53,53,54,55,55,55,56,56,
+          56,57,57,57,57,57,57,58,58,58,59,59,60,
+          60,61,62,62,63,64,64,65,69)
+
+coro <- c(0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0
+          ,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0,1,0,0,
+          0,0,0,1,0,0,1,0,0,1,1,0,1,0,1,0,0,1,0,1,
+          1,0,0,1,0,1,0,0,1,1,1,1,0,1,1,1,1,1,0,
+          0,1,1,1,1,0,1,1,1,1,0,1,1,1,1,1,0,1,1,1)
+
+Data <- data.frame(edad, coro)
+
+logit_reg <- glm(coro ~ edad, data = Data, 
+                 family = "binomial")
+
+roc_data <- function(modelo, coro,step) {
+  out<-data.frame()
+  cut <- seq(step, 1, by = step)
+  for (i in cut) {
+    
+    predicted_value <- predict(modelo,type = "response")
+    predicted_class <- ifelse(predicted_value>i, "1","0")
+    performance_data<-data.frame(observed=coro, 
+                                 predicted= predicted_class)
+    
+    
+    positive <- sum(performance_data$observed=="1")
+    negative <- sum(performance_data$observed=="0")
+    predicted_positive <- sum(performance_data$predicted=="1")
+    predicted_negative <- sum(performance_data$predicted=="0")
+    total <- nrow(performance_data)
+    
+    tp<-sum(performance_data$observed=="1"&performance_data$predicted=="1")
+    tn<-sum(performance_data$observed=="0"&performance_data$predicted=="0")
+    fp<-sum(performance_data$observed=="0"&performance_data$predicted=="1")
+    fn<-sum(performance_data$observed=="1"&performance_data$predicted=="0")
+    
+    accuracy <- (tp+tn)/total
+    error_rate <- (fp+fn)/total
+    sensitivity <- tp/positive
+    especificity <- tn/negative
+    precision <- tp/predicted_positive
+    npv <- tn / predicted_negative
+    fpr <- fn/negative
+    J <-  sensitivity - (1-especificity)
+    
+    out<-rbind(out,c(i,1-especificity,sensitivity,J,
+                     especificity,precision,npv,fpr))
+  }
+  
+  names(out)<-c("cut","1-Especificity","Sensivity",
+                "Youden(J)","Especificity",
+                "Precision","npv","fpr")
+  return(out)
+}
+
+
+roc_graph <- roc_data( logit_reg, coro, step = 0.0001)
+Youden <- roc_graph$`Youden(J)`
+max(Youden)
+
+
+x<-roc_graph$`1-Especificity`[which.max(Youden)]
+y<-roc_graph$Sensivity[which.max(Youden)]
+
+plot(roc_graph$`1-Especificity`,roc_graph$Sensivity,
+     xlab = "1-especificity", ylab = "Sensitivity",
+     type = "l")
+abline(a=0,b=1)
+index<-seq(1,nrow(roc_graph), by=nrow(roc_graph)*0.05)
+points(x,y, pch=20, col="red")
+text(roc_graph$`1-Especificity`[index],
+     roc_graph$Sensivity[index], 
+     labels = roc_graph$cut[index],
+     cex=0.6, pos=4)
+
+Youden <-roc_graph$`Youden(J)`
+max(Youden)
+#x
+#y
+which.max(Youden)
+x<-roc_graph$`1-Especificity`[which.max(Youden)]
+y<-roc_graph$Sensivity[which.max(Youden)]
+
+x
+y
+@
+En el gr\'afico agregamos el punto optimo donde este nos garantiza que no cometamos un error mayor al tomar un dato de entrada con da\~{n}o coronario cuando realmente no lo es.\\
+Y encontramos que el valor del estad\'istico J de Youden es 0.474.
+
+\section{Problema 6}
+La siguiente tabla muestra conteos de c\'elulas $T_4$ por $mm^3$ en muestra de sangra de 20 pacientes (en remisi\'on) con enfermedad de Hodgkin, as\'i como conteos en 20 pacientes en remisi\'on de otras enfermedades. Una cuesti\'on de inter\'es es si existen diferencias en las distribuciones de conteos en ambos grupos.
+
+\begin{enumerate}
+    \item[a)] Haga una comparaci\'on gr\'afica exploratoria de estos datos.
+    \item[b)] Ajuste un modelo de Poisson apropiado.
+    \item[c)] Usando la normalidad asint\'otica de los estimadores de m\'axima verosimilitud, d\'e un intervalo del 90\% de confianza para la diferencia en medias. Â¿Hay evidencia de diferencias en los dos grupos en cuanto a las medias de los conteos?
+  \end{enumerate}
+  
+\textcolor{red}{\textbf{\large{Soluci\'on}}}\\
+
+Inciso a)\\
+<<eval=TRUE,echo=TRUE,comment=NA,warning=FALSE,message=FALSE,fig.width=5.0,fig.height=5.0>>=
+
+H <- c(396, 568, 1212, 171, 554, 1104, 257, 435, 295, 397,
+          288, 1004, 431, 795, 1621, 1378, 902, 958, 1283,
+       2415)
+
+NH <- c(375, 375, 752, 208, 151, 116, 736, 192, 315, 1252,
+          675, 700, 440, 771, 688, 426, 410, 979, 377, 503)
+
+# Realizamos nuestro dataframe 
+dat <- data.frame('H'=H, 'NH'=NH)
+
+## Realizamos las graficas exploratorias de los datos 
+par(mfrow = c(1, ncol(dat)))
+invisible(lapply(1:ncol(dat), function(i) boxplot(dat[, i])))
+
+par(mfrow = c(1, 1))
+
+
+############3
+library(ggplot2)
+df <- dat
+df <- stack(df)
+
+dx <- density(H)
+dy <- density(NH)
+
+ggplot(df, aes(x = values, fill = ind)) + 
+       geom_density(alpha = 0.5) + # Densidades con transparencia
+       xlim(c(min(dx$x, dy$x), # Límites del eje X
+            c(max(dx$x, dy$x)))) +
+       scale_fill_discrete(name = "Enfermedad", # Cambiar el título de la leyenda
+                           labels = c("H", "NH")) # + # Cambiar las etiquetas de la leyenda
+     # theme(legend.position = "none") # Eliminar leyenda
+
+
+#############
+
+hist(dat$H, probability = TRUE, ylab = "", col = "grey",xlab='',
+     axes = FALSE, main = "")
+
+# Eje
+axis(1)
+
+# Densidad
+lines(density(dat$H), col = "red", lwd = 2)
+
+# Boxplot
+par(new = TRUE)
+boxplot(dat$H, horizontal = TRUE, axes = FALSE,
+        main = "Gráfica exploratoria con enfermedad H",
+        xlab = "Conteo de células", ylab = "Frecuencia",lwd = 2, 
+        col = rgb(0, 1, 1, alpha = 0.15))
+#######################
+hist(dat$NH, probability = TRUE, ylab = "", xlab='' ,col = "grey",
+     axes = FALSE, main = "")
+
+# Eje
+axis(1)
+
+# Densidad
+lines(density(dat$NH), col = "red", lwd = 2)
+
+# Boxplot
+par(new = TRUE)
+boxplot(dat$NH, horizontal = TRUE, axes = FALSE,
+        main = "Gráfica exploratoria sin enfermedad H",
+        xlab = "Conteo de células", ylab = "Frecuencia", lwd = 2,
+        col = rgb(0, 1, 1, alpha = 0.15))
+
+@
+Al realizar los distintos gr\'aficos observamos los valores respecto a la media se parecen ligeramente pero la varianza de dichos datos cambia para cada categoria ya que para los que tienen la enfermendad los datos se encuentran ligeramente m\'as dispersos mientras que para los que no tienen la enfermedad se encuentran m\'as centrados.\\
+Se anexaron distintos gr\'aficos con la intenci\'on de ser m\'as ilustrativo con los datos.\\
+
+Inciso b)
+<<eval=TRUE,echo=TRUE,comment=NA,warning=FALSE,message=FALSE,fig.width=5.0,fig.height=5.0>>=
+### caso 1
+valores_0 <- 1:20
+H <- c(396, 568, 1212, 171, 554, 1104, 257, 435, 295, 397,
+       288, 1004, 431, 795, 1621, 1378, 902, 958, 1283,
+       2415)
+
+NH <- c(375, 375, 752, 208, 151, 116, 736, 192, 315, 1252,
+        675, 700, 440, 771, 688, 426, 410, 979, 377, 503)
+
+##### primer modelo 
+modelo_H <- glm(H ~ valores_0, poisson)
+summary(modelo_H)
+
+##### segundo modelo
+
+modelo_NH <- glm(NH ~ valores_0, poisson)
+summary(modelo_NH)
+
+
+
+@
+En este inciso realizamos diversos modelo con la intensi\'on de entender el comportamiento del conteo de celular $T_4$. Se propusier\'on modelos separados para cada una de las categorias, una donde esta presente la enfermedad y otro donde no lo esta presente. \\
+Para el primer modelo observamos que el conteo de celulas de personas con la enfermedad(H) tiene cierta dispersi\'on y esto se justifica en los resultados del modelo ya que el residual deviance es mayor que los grados de libertad.\\
+El segundo modelo sucede lo mismo, observamos que dado los resultados hay una dispersi\'on en el conteo de celulas de las personas sin la enfermedad.\\
+Al observar que nuestros modelos en ambos casos los modelos son significativos pero debido al residual deviance observamos que hay dispersi\'on por lo que no podemos afirmar alguna tendencia en el conteo de celulas al estar presente la enfermedad.\\
+
+Inciso c)
+<<eval=TRUE,echo=TRUE,comment=NA,warning=FALSE,message=FALSE,fig.width=5.0,fig.height=5.0>>=
+t.test(x = H, y = NH, alternative = "two.sided", mu = 0,       
+       paired = FALSE, var.equal = FALSE, conf.level = 0.90)
+@
+Por medio del comando anterior encontramos que si hay diferencia de medias, ya que nuestra h\'otesis nula es que son iguales se rechaza dicha h\'otesis. y el intervalo queda de la siguente forma: (823.20, 522.05)
+
+\section{Problema 7}
+Los datos de la tabla en la siguiente hoja son n\'umeros, $n$, de p\'olizas de seguros y los correspondientes n\'umeros, $y$, de reclamos (esto es, n\'umeros de accidentes en los que se pidi\'o el amparo de la p\'oliza). La variable $CAR$ es una condificaci\'on de varias clases de carros, $EDAD$ es la edad del titular de la p\'oliza y $DIST$ es el distrito donde vive el titular.
+
+\begin{enumerate}
+    \item[a)] Calcule la tasa de reclamos, $y/n$, para cada categor\'ia y grafique estas tasas contra las diferentes variables para tener una idea de los efectos principales.
+    \item[b)] Use regresi\'on log\'istica para estimar los efectos principales(cada variable tratada como categ\'orica y modelada usando variables indicadoras) as\'i como sus interacciones.
+    \item[c)] Basados en los resultados del inciso anterios, los autores del art\'iculo donde aparecieron y que pod\'ian considerar que $CAR$ y $EDAD$ fuesen tratadas como variables continuas. Ajuste un modelo incorporado estas observaciones y comp\'arelo con el obtenido en (b) Â¿Cua\'ales son las conclusiones?.
+  \end{enumerate}
+
+\textcolor{red}{\textbf{\large{Soluci\'on}}}\\
+
+Inciso a)\\
+<<eval=TRUE,echo=TRUE,comment=NA,warning=FALSE,message=FALSE,fig.width=5.0,fig.height=5.0>>=
+
+library(ggplot2)
+CAR <- rep(c('1','2','3','4'), each = 4)
+EDAD <- rep(rep(c('1','2','3','4'), each = 1),4)
+y_0 <- c(65,65,52,310,98,159,175,877,41,117,137,477, 
+         11,35,39,167)
+n_0 <- c(317,476,486,3259,486,1004,1355,7660,223,539,
+         697,3442,40,148,214,1019)
+y_1 <- c(2,5,4,36,7,10,22,102,5,7,16,63,0,6,8,33)
+n_1 <- c(20,33,40,316,31,81,122,724,18,39,68,344,
+         3,16,25,114)
+
+tasa_0 <- y_0/n_0
+tasa_1 <- y_1/n_1
+
+dat <- data.frame('CAR'=CAR,'EDAD'=EDAD,'tasa_0'=tasa_0,
+                  'tasa_1'=tasa_1)
+
+### Realizamos los primeros gráficos correspondientes
+# CAR vs tasa_0
+ggplot(data=dat, aes(x=CAR, y=tasa_0, color=EDAD )) +
+  geom_point(size = 3 ,aes(col=EDAD) ) +
+  labs(title = 'Tasa de reclamos vs CAR',
+       subtitle='Distrito 0' , x='CAR', y='Tasa de reclamos') + 
+  theme(plot.title = element_text(hjust = 0.5), 
+        plot.subtitle = element_text(hjust = 0.5))
+
+# CAR vs tasa_1
+ggplot(data=dat, aes(x=CAR, y=tasa_1, color=EDAD )) +
+  geom_point(size = 3 ,aes(col=EDAD) ) +
+  labs(title = 'Tasa de reclamos vs CAR',
+       subtitle='Distrito 1' , x='CAR', y='Tasa de reclamos') + 
+  theme(plot.title = element_text(hjust = 0.5), 
+        plot.subtitle = element_text(hjust = 0.5))
+
+#EDAD vs tasa_0
+ggplot(data=dat, aes(x=EDAD, y=tasa_0, color=CAR )) +
+  geom_point(size = 3 ,aes(col=CAR) ) +
+  labs(title = 'Tasa de reclamos vs EDAD',
+       subtitle='Distrito 0' , x='EDAD', y='Tasa de reclamos') +
+  theme(plot.title = element_text(hjust = 0.5), 
+        plot.subtitle = element_text(hjust = 0.5))
+
+#EDAD vs tasa_1
+ggplot(data=dat, aes(x=EDAD, y=tasa_1, color=CAR )) +
+  geom_point(size = 3 ,aes(col=CAR) ) +
+  labs(title = 'Tasa de reclamos vs EDAD',
+       subtitle='Distrito 1' , x='EDAD', y='Tasa de reclamos') +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5))
+
+#### una con todos los datos
+
+DIST <- rep(c('0','1'), each=16)
+tasas <- c(tasa_0, tasa_1)
+edad_f <- c(EDAD, EDAD)
+car_f <- c(CAR, CAR)
+
+dat_2 <- data.frame('CAR'=car_f,'EDAD'=edad_f,'Tasa'=tasas,'DIST'=DIST)
+
+ggplot(data=dat_2, aes(x=EDAD, y=Tasa, color=DIST )) +
+  geom_point(size = 3 ,aes(col=DIST) ) +
+  labs(title = 'Tasa de reclamos vs EDAD'
+       , x='EDAD', y='Tasa de reclamos') +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggplot(data=dat_2, aes(x=CAR, y=Tasa, color=DIST )) +
+  geom_point(size = 3 ,aes(col=DIST) ) +
+  labs(title = 'Tasa de reclamos vs CAR'
+       , x='CAR', y='Tasa de reclamos') +
+  theme(plot.title = element_text(hjust = 0.5))
+@
+Los gr\'aficos los dividimos en varios casos, los primeros corresponden a gr\'aficos tomando en cuenta solo la variable con alg\'un distrito(Distrito = 0 \'o Distrito = 1) y el otro tomando la variable con ambos distritos.\\
+En el gr\'afico correspondiente a la variable $CAR$ respecto al distrito 0, se observa que la categoria de la variable $CAR$ que tiene m\'as altas tasas es la 4 y tomando como referencia la variable $EDAD$ la categoria que tiene m\'as alto valores es la categoria 1.\\
+En el gr\'afico donde ahora tomamos el distrito 1 observamos que las tasas son mayores para la categoria 4 de la variable $CAR$.\\
+En el gr\'afico de la tasa de reclamos respecto a la EDAD para el distrito 0 nos muestra un comportamiento en descenso ya que empieza con tasas altas y a medida que cambia la categoria disminuye dicha tasa.\\
+En ese mismo gr\'afico pero tomando ahora el distrito 1 ya no se observa un patr\'on, pero si hacemos diferencia respecto a la variable $CAR$ nuestro valores son grandes para la categoria 4.
+Ya al final tomando ambos distritos para cada variable, observamos para la variable EDAD cierto comportamiento decreciente y algunos valores altos que no son muchos. Para la variable CAR es distinto el escenario ya que los valores van en forma creciente y en especifico se observa que los valores altos en su mayoria provienen del distrito 0.\\
+
+Inciso b)\\
+<<eval=TRUE,echo=TRUE,comment=NA,warning=FALSE,message=FALSE,fig.width=5.0,fig.height=5.0>>=
+
+library(MASS)
+library(tidyverse)
+
+y_0 <- c(65,2,65,5,52,4,310,36,98,7,159,10,175,22,877,102,41,5,117,7
+      ,137,16,477,63,11,0,35,6,39,8,167,33)
+
+n_0 <- c(317,20,476,33,486,40,3259,316,486,31,1004,81,1355,122,7660,724,
+      223,28,539,39,697,68,3442,344,40,3,148,16,214,25,1019,114)
+
+dat <- data.frame(expand.grid(
+DIST = factor( c("0","1"),levels=c("1","0") ),
+EDAD = factor( c('1','2','3','4'),levels=c('4','3','2','1') ),
+CAR = factor( c('1','2','3','4'),levels=c('4','3','2','1') )),
+frec = c(0.20504,0.1,0.1365, 0.1515, 0.1069, 0.1, 0.0951, 0.1139, 
+         0.2016, 0.2258, 0.1583, 0.1234, 0.12915, 0.18032, 0.1144,
+         0.14088, 0.18385, 0.2777, 0.21706, 0.17948, 0.19655, 0.2352,
+         0.1385, 0.1831, 0.2750, 0.00, 0.2364, 0.3750, 0.1822, 0.3200,
+         0.1638, 0.2894),
+y = c(65,2,65,5,52,4,310,36,98,7,159,10,175,22,877,102,41,5,117,7
+      ,137,16,477,63,11,0,35,6,39,8,167,33),
+n = c(317,20,476,33,486,40,3259,316,486,31,1004,81,1355,122,7660,724,
+      223,28,539,39,697,68,3442,344,40,3,148,16,214,25,1019,114),
+n_y = n_0-y_0)
+
+
+dat
+
+dat %>% 
+  mutate(EDAD = paste("EDAD", EDAD, sep = "_"),
+         valor_EDAD = 1)
+
+m <- dat %>% 
+  mutate(CAR = paste("CAR", CAR, sep = "_"),
+         valor_CAR = 1,
+         EDAD = paste("EDAD", EDAD, sep = "_"), 
+         valor_EDAD = 1
+         )%>%
+  spread(key = CAR, value = valor_CAR, fill = 0)%>%
+  spread(key = EDAD, value = valor_EDAD, fill = 0)
+
+m
+
+##### Realizamos un primer analisis solo tomando en cuenta la 
+## la variable CAR y DIST pero con todos los datos
+
+mm_1 <- glm(cbind(SI=y, NO=n_y) ~ DIST + CAR_1 + CAR_2 + CAR_3,
+            data = m, family = binomial(link = logit))
+summary(mm_1)
+
+mm_2 <- glm(cbind(SI=y, NO=n_y) ~ DIST + EDAD_1 + EDAD_2 + EDAD_3,
+            data = m, family = binomial(link = logit))
+summary(mm_2)
+
+#### Ahora realizamos los mismos modelos pero por separado
+D_t1 <- m[1:16,]
+D_t0 <- m[17:32,]
+## CAR: modelos de car
+modelo_CAR_1 <- glm(cbind(SI=y, NO=n_y) ~ CAR_1 + CAR_2 + CAR_3, 
+                    data = D_t1,family = binomial(link = logit))
+summary(modelo_CAR_1) 
+
+modelo_CAR_0 <- glm(cbind(SI=y, NO=n_y) ~ CAR_1 + CAR_2 + CAR_3, 
+                    data = D_t0,family = binomial(link = logit))
+summary(modelo_CAR_0)
+
+## EDAD: modelos de la edad
+modelo_EDA_1 <- glm(cbind(SI=y, NO=n_y) ~ EDAD_1 + EDAD_2 + EDAD_3, 
+                    data = D_t1,
+                    family = binomial(link = logit))
+summary(modelo_EDA_1)
+
+modelo_EDAD_0 <- glm(cbind(SI=y, NO=n_y) ~ EDAD_1 + EDAD_2 + EDAD_3, 
+                    data = D_t0,family = binomial(link = logit))
+summary(modelo_EDAD_0)
+
+##########################   Posibles
+########################## Combinaciones
+
+modelo_1 <- glm(cbind(SI=y, NO=n_y) ~ EDAD_1 + EDAD_2 + EDAD_3 + CAR_1,
+                data = m,
+                family = binomial(link = logit))
+summary(modelo_1)
+
+modelo_2 <- glm(cbind(SI=y, NO=n_y) ~ EDAD_1 + EDAD_2 + EDAD_3 + CAR_1 + CAR_2,
+                data = m, family = binomial(link = logit))
+summary(modelo_2)
+
+modelo_3 <- glm(cbind(SI=y, NO=n_y) ~ EDAD_1 + EDAD_2 + EDAD_3 + CAR_1 + CAR_2 + CAR_3,
+                data = m, family = binomial(link = logit))
+summary(modelo_3)
+
+modelo_4 <- glm(cbind(SI=y, NO=n_y) ~ EDAD_1 + EDAD_2 + CAR_1 + CAR_2 + CAR_3,
+              data = m, family = binomial(link = logit))
+summary(modelo_4)
+
+modelo_5 <- glm(cbind(SI=y, NO=n_y) ~ EDAD_1 + CAR_1 + CAR_2 + CAR_3, 
+                data = m, family = binomial(link = logit))
+summary(modelo_5)
+
+modelo_6 <- glm(cbind(SI=y, NO=n_y) ~ EDAD_1 + EDAD_2 + CAR_1 + CAR_2, 
+                data = m, family = binomial(link = logit))
+summary(modelo_6)
+
+modelo_7 <- glm(cbind(SI=y, NO=n_y) ~ EDAD_1 + CAR_2, 
+                data = m, family = binomial(link = logit))
+summary(modelo_7)
+@
+En cada uno de los modelos observamos valores altos para el AIC, dicho valor del cual nos vamos a apoyar para hacer la diferencia entre los distintos modelos.\\
+Los primeros modelos tomando solo una variable $CAR$ \'o $EDAD$ nos dicen que cada categoria son significativas pero para el modelo donde tomamos la variable $CAR$ nos dice que la que tiene un mayor peso en el pronostico es la categoria 1 y en el modelo donde tomamos la $EDAD$ nos dice que la categoria con mayor peso al momento de realizar el pronostico es la categoria 1.\\
+Seguido de estos modelos realizamos los mismo pero ahora dividiendo nuestros datos, es decir solo realizar el pronostico tomando en cuenta un distrito. En estos modelos el que mejor nos dio el AIC fue cuando solo se toma el distrito 1 y la variable $CAR$, los dem\'as nos arrojaron valores altos de AIC.\\
+Finalmente realizamos posibles combinaciones entre las distintas categorias que tenemos, los valores de acuerdo al AIC no fueron menores a las 200 unidades por lo que ninguno se tomo el mejor. Los resultados de cada uno de ellos se muestra as\'i como la combinaci\'on que se tomo.\\
+
+
+
+Inciso c)\\
+<<eval=TRUE,echo=TRUE,comment=NA,warning=FALSE,message=FALSE,fig.width=5.0,fig.height=5.0>>=
+
+dat_2 <- data.frame(expand.grid(
+DIST = factor( c("0","1"), levels=c("1","0") ),
+EDAD = factor( c('1','2','3','4'), levels=c('4','3','2','1') ),
+CAR = factor( c('1','2','3','4'), levels=c('4','3','2','1') )),
+frec = c(0.20504,0.1,0.1365, 0.1515, 0.1069, 0.1, 0.0951, 0.1139, 
+         0.2016, 0.2258, 0.1583, 0.1234, 0.12915, 0.18032, 0.1144,
+         0.14088, 0.18385, 0.2777, 0.21706, 0.17948, 0.19655, 0.2352,
+         0.1385, 0.1831, 0.2750, 0.00, 0.2364, 0.3750, 0.1822, 0.3200,
+         0.1638, 0.2894),
+y = c(65,2,65,5,52,4,310,36,98,7,159,10,175,22,877,102,41,5,117,7
+      ,137,16,477,63,11,0,35,6,39,8,167,33),
+n = c(317,20,476,33,486,40,3259,316,486,31,1004,81,1355,122,7660,724,
+      223,28,539,39,697,68,3442,344,40,3,148,16,214,25,1019,114),
+n_y = n_0-y_0)
+
+dat_2
+modelo_con <- glm(cbind(SI=y, NO=n_y) ~ EDAD + CAR, 
+                data = dat_2, family = binomial(link = logit))
+summary(modelo_con)
+@
+Finalmente nos dicen que observemos que sucede al tomar las variables como continuas, en dicho proceso los resultados nos dicen que el AIC fue cerca de 220 por lo que comparado con las dem\'as interacciones no hay mucha diferencia, en este caso coincide con el m\'as bajo de los valores AIC del inciso b) por lo que en conclusi\'on podemos decir que las interacciones ninguna interacci\'on es importante o tiene un mayor impacto que tratar a las variables de forma continua.\\
+
+\section{Problema 8}
+A lo largo del curso hemos enfatizado el uso del m\'etodo de M\'axima Verosimilitud para todo lo relacionado con estimaci\'on. Consideremos ahora una alternativa: El m\'etodo de la M\'inima Ji-cuadrada. Suponga que las celdad de una multinomial est\'an parametrizadas en t\'erminos de un vector $\theta = (\theta_1, ...., \theta_s)^t$. El m\'etodo de la M\'inima Ji-cuadrada consiste en estimar $\theta$ mediante aquel valor que minimice el estad\'istico de Pearson.
+
+  \begin{align*}
+		x^2 = \sum \frac{(obs - esp)^2}{esp} = \sum \frac{(y_j - n\pi_j(\theta))^2}{n\pi_j(\theta)}
+  \end{align*}
+Considere el siguiente problema. Suponga una poblaci\'on muy grande de objetos que pueden clasificarse en tres categor\'ias, A, B y C. Para estimar las proporciones $\pi_1, \pi_2$ y $\pi_3$ correspondientes a cada una de esas categor\'ias, se efectu\'o un estudio; se obtuvieron tres muestras de tama\~{n}os $n_1, n_2$ y $n_3$ tomadas de la poblaci\'on global, sin embargo, en vez de registrar la frecuencia observada de A's, B's y C's de cada muestra, lo que se hizo fue anotar:
+  \begin{enumerate}
+    \item N\'umero de A's en la muestra de tama\~{n}o $n_1 = y_1$. 
+    \item N\'umero de B's en la muestra de tama\~{n}o $n_2 = y_2$
+    \item N\'umero de A's en la muestra de tama\~{n}o $n_3 = y_3$
+  \end{enumerate}
+
+Estime $\pi_1, \pi_2$ y $\pi_3$ usando el m\'etodo de la m\'inima ji-cuadrada: suponga que $n_1=100, y_1=22, n_2 = 150, y_2 = 52, n_3 = 200. y_2 = 77$. Esto es, encuentre $\pi_1, \pi_2$ y $\pi_3$ que minimizen:\\
+
+  \begin{align*}
+		\frac{(y_1 - n_1\pi_1)^2}{n_1\pi_1} + \frac{[ (n_1 - y_1)- n_1(1 - \pi_1) ]^2}{n_1(1 - \pi_1)} + .... + \frac{(y_3 - n_3\pi_3)^2}{n_3\pi_3} + \frac{[ (n_3-\pi_3) -n_3(1-\pi_3)]^2}{n_3(1-\pi_3)}
+  \end{align*}
+con la restricci\'on $\pi_3 = 1 - \pi_1 - \pi_2$(sugerimos usar directamente nlminb de R).\\
+
+\textcolor{red}{\textbf{\large{Soluci\'on}}}\\
+<<eval=TRUE,echo=TRUE,comment=NA,warning=FALSE,message=FALSE,fig.width=5.0,fig.height=5.0>>=
+
+suma1 <- function(p1)
+  {
+    (22 - (100*p1) )^2/(100*p1) +  
+    ( (100-22) - 100*(1-p1) )^2/( 100*(1 - p1) )
+  }
+
+suma2 <- function(p2)
+  {
+    (52 - (150*p2) )^2/(150*p2) +  
+    ( (150-52) - 150*(1-p2) )^2/( 150*( 1 - p2) )
+  }
+
+suma3 <- function(p3)
+  {
+    (77 - (200*p3) )^2/(200*p3) + 
+    ( (200-77) - 200*(1-p3) )^2/( 200*(1 - p3) )
+  }
+
+Manu_G<-function(p){
+    p1 <- p[1]
+    p2 <- p[2]
+    suma1(p1) + suma2(p2) + suma3(1 - p[1] - p[2])}
+
+valores <- nlminb(c(1/3,1/3), 
+                  Manu_G, lower = c(0,0), upper = c(1,1))
+a <- valores$par
+x1 <- a[1]
+x2 <- a[2]
+x3 <- 1 - x2 - x1
+x1;x2;x3
+@
+Al final obtenemos los valores y los mandamos a imprimir en pantalla, para $\pi_1 = $ 0.239544, $\pi_2 = $ 0.36289 y $\pi_3 = $ 0.397557, en donde observamos que se cumple la restricci\'on $\pi_3 = 1 - \pi_1 - \pi_2$. 
+
+\section{Problema 9}
+Se toman los datos relacionados con el hundimiento del Titanic en abril de 1912. El resultado se puede expresar en una tabla de dimensi\'on 4.\\
+Las variables son $Classs$ de los pasejeros(1,2,3, Tripulaci\'on), $Sex$ de los pasajeros(Male, Femele), $Age$ de los pasajeros(Child, Adult), y $Survived$ si los pasajeros sobrevivieron o no (No, Yes). Usar libreria en R "titanic" y los datos se encuentran en la variable "Titanic".\\
+
+\textcolor{red}{\textbf{\large{Soluci\'on}}}\\
+<<eval=TRUE,echo=TRUE,comment=NA,warning=FALSE,message=FALSE,fig.width=5.0,fig.height=5.0>>=
+library(titanic)
+library(MASS)
+Titanic
+
+datos <- data.frame(expand.grid(
+  Survived = factor(c('no', 'yes'), levels = c('yes','no') ),
+  Age = factor( c('Child','Adult'), levels = c('Adult', 'Child') ),
+  Sex = factor( c('M','F'), levels = c('F','M') ),
+  Class = factor( c('1','2','3','4'), levels = c('4','3','2','1') )),
+  frec = c(0,5,48,57 ,0,1,4,140, 0,11,154,14, 0,13,13,80, 35,13,387,75, 
+           17,14,89,76, 0,0,670,192, 0,0,3,20))
+datos
+
+ff <- c("Class+Age+Sex+Survived")
+gg <- c(
+    "Class","Age",'Sex','Survived',
+    
+    "Class*Age*Sex",  ## XYZ
+    "Class*Age*Survived", ## XYW 
+    "Class*Sex*Survived", ## XZW
+    "Age*Sex*Survived", ##YZW
+    
+    "Class*Age*Sex+Class*Age*Survived", ## XYZ + XYW
+    "Class*Age*Sex+Class*Sex*Survived", ## XYZ+ XZW
+    "Class*Age*Sex+Age*Sex*Survived", ## XYZ + YZW
+    "Class*Age*Survived+Class*Sex*Survived", ##XYW+XZW
+    "Class*Age*Survived+Age*Sex*Survived", ## xYW+YZW
+    "Class*Sex*Survived+Age*Sex*Survived", ## XZW+YZW
+    
+    "Class*Age*Sex+Class*Age*Survived+Class*Sex*Survived", 
+    "Class*Age*Sex+Class*Age*Survived+Age*Sex*Survived", 
+    "Class*Age*Survived+Class*Sex*Survived+Age*Sex*Survived", 
+    "Class*Age*Sex+Class*Sex*Survived+Age*Sex*Survived", 
+    "Class*Age*Sex+Class*Age*Survived+Class*Sex*Survived+Age*Sex*Survived",
+    
+    "Class*Age*Sex+Class*Age*Survived+Class*Sex*Survived+Age*Sex*Survived+Class*Age*Sex*Survived")
+
+
+tt <- matrix(0,21,4)
+colnames(tt) <- c("G2","X2","gl","p-valor")
+out <- loglm(frec~Class+Age+Sex+Survived,
+             data=Titanic, param=T,fit=T)
+tt[1,] <- c(out$lrt,out$pearson,out$df,1-pchisq(out$lrt,out$df))
+for(j in 1:20){
+  if(j < 4){
+    fmla <- as.formula(paste("frec ~","+",gg[j]))
+    out <- loglm(fmla, data=Titanic, param=T,fit=T)
+    tt[j+1,] <- c(out$lrt,out$pearson,out$df,1-pchisq(out$lrt,out$df))  
+  }
+  else{
+    fmla <- as.formula(paste("frec ~",ff,"+",gg[j]))
+    out <- loglm(fmla, data=Titanic, param=T,fit=T)
+    tt[j+1,] <- c(out$lrt,out$pearson,out$df,1-pchisq(out$lrt,out$df))
+  }}
+
+tt
+
+#### probando otros modelos 
+sat.model <- loglm(frec~Class*Sex*Age*Survived , data = Titanic,
+                   param=T, fit=T )
+sat.model
+
+stepAIC(sat.model, direction = 'backward', trace = 0)
+@
+Al realizar la tabla con cada uno de los posibles combinaciones tomando en cuenta lo que plantea el ejercicio llegamos a la concluci\'on que realmente todos los modelos propuestos son rechazados, basandonos en ese valor en el p-value.\\
+Finalmente con el comando StepAIC se trata de encontrar el mejor modelo comenzando desde la cu\'adriple interacci\'on.\\
+
+
+\section{Problema 10}
+Se ha ralizado un an\'alisis sobre el valor terap\'eutico del \'acido asc\'orbico(vitamina C) en la relaci\'on a su efecto sobre la gripe com\'un. Se tiene una tabla 2x2 con los recuentos correspondientes para una muestra de 279 personas:\\
+%%tabla prro
+Aplicar un modelo lineal para determinar si existe evidencia suficiente para asegurar que el \'acido asc\'orbico ayuda tener menos gripe.\\
+
+\textcolor{red}{\textbf{\large{Soluci\'on}}}\\
+<<eval=TRUE,echo=TRUE,comment=NA,warning=FALSE,message=FALSE,fig.width=5.0,fig.height=5.0>>=
+datos2 <- data.frame( expand.grid(
+  Gripe_V = factor(c('Gripe', 'no-Gripe'), levels = c('no-Gripe','Gripe') ),
+  Aspirina = factor( c('Placebo','A.Ascorbico'), 
+                     levels = c('A.Ascorbico', 'Placebo') )),
+  frec = c(31,109,17,122) )
+
+datos2
+
+model_datos2_10 <- loglm(frec~Gripe_V + Aspirina , 
+                         data = datos2,
+                         param=T, fit=T)
+model_datos2_10
+
+glmTcoef <- coef(model_datos2_10)
+
+glmTcoef
+@
+Al observar los coeficientes que regresa el modelo encontramos que no hay evidencia suficiente para asegurar que el \'acido asc\'orbico ayuda a tener menos gripe.
+
+
+\end{document}
